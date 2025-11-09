@@ -1,0 +1,160 @@
+package Entity;
+
+import Interface.Displayable;
+import Utils.HelperUtils;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public class Appointment implements Displayable {
+    private String appointmentId;
+    private String patientId;
+    private String doctorId;
+    private LocalDate appointmentDate;
+    private String appointmentTime;
+    private String status; // (Scheduled/Completed/Cancelled/Rescheduled)
+    private String reason;
+    private String notes;
+
+
+    public Appointment(String appointmentId, String patientId, String doctorId,
+                       LocalDate appointmentDate, String appointmentTime,
+                       String status, String reason, String notes) {
+        this.appointmentId = appointmentId;
+        this.patientId = patientId;
+        this.doctorId = doctorId;
+        this.appointmentDate = appointmentDate;
+        this.appointmentTime = appointmentTime;
+        this.status = status;
+        this.reason = reason;
+        this.notes = notes;
+    }
+
+    public Appointment() {
+    }
+
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public LocalDate getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(LocalDate appointmentDate) {
+        if (!HelperUtils.isValidDate(String.valueOf(appointmentDate))) {
+            System.out.println(" is not valid date ");
+
+        }
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getAppointmentTime() {
+
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(String appointmentTime) {
+        if (!HelperUtils.isValidDate(appointmentTime)) {
+            System.out.println(" is not valid time ");
+
+        }
+        this.appointmentTime = appointmentTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        if (!status.equals("Scheduled") && !status.equals("Completed") &&
+                !status.equals("Cancelled") && !status.equals("Rescheduled")) {
+            System.out.println("Invalid status. Allowed values are: Scheduled, Completed, Cancelled, Rescheduled.");
+            return;
+        }
+        this.status = status;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        if (!HelperUtils.isNull(reason) || !HelperUtils.isValidString(reason)) {
+            System.out.println("Reason cannot be null or empty.");
+            return;
+
+        }
+        this.reason = reason;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        if (!HelperUtils.isNull(notes) || !HelperUtils.isValidString(notes)) {
+            System.out.println("Notes cannot be null or empty.");
+            return;
+        }
+        this.notes = notes;
+    }
+
+    // Display Info
+    public void displayInfo() {
+        System.out.println("===== Appointment Details =====");
+        System.out.println("Appointment ID: " + appointmentId);
+        System.out.println("Patient ID: " + patientId);
+        System.out.println("Doctor ID: " + doctorId);
+        System.out.println("Date: " + appointmentDate);
+        System.out.println("Time: " + appointmentTime);
+        System.out.println("Status: " + status);
+        System.out.println("Reason: " + reason);
+        System.out.println("Notes: " + notes);
+        System.out.println("===============================");
+    }
+
+    @Override
+    public void displaySummary() {
+        System.out.println("Appointment ID: " + appointmentId + ", Date: " + appointmentDate + ", Time: " + appointmentTime + ", Status: " + status);
+    }
+
+    //  Overloaded
+    public void addNotes(String notes) {
+        this.notes = notes;
+        System.out.println("Notes added: " + notes);
+    }
+
+    public void addNotes(String notes, String addedBy) {
+        this.notes = notes + " (Added by: " + addedBy + ")";
+        System.out.println("Notes added by " + addedBy + ": " + notes);
+    }
+
+    public void addNotes(String notes, String addedBy, LocalDateTime timestamp) {
+        this.notes = notes + " (Added by: " + addedBy + " at " + timestamp + ")";
+        System.out.println("Notes added by " + addedBy + " on " + timestamp + ": " + notes);
+    }
+}
+
+
