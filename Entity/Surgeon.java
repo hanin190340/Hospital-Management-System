@@ -5,9 +5,11 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Surgeon extends Doctor implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     int surgeriesPerformed;
     List<String> surgeryTypes;
     boolean operationTheatreAccess;
@@ -28,12 +30,7 @@ public class Surgeon extends Doctor implements Displayable {
         this.operationTheatreAccess = operationTheatreAccess;
     }
 
-    public Surgeon(String id, String firstName, String lastName, LocalDate dateOfBirth, String gender, String phoneNumber, String email, String address, String doctorId, String specialization, String qualification, int experienceYears, String departmentId, double consultationFee, List<String> availableSlots, List<String> assignedPatients, boolean isAvailable, int surgeriesPerformed, List<String> surgeryTypes, boolean operationTheatreAccess) {
-        super(id, firstName, lastName, dateOfBirth, gender, phoneNumber, email, address, doctorId, specialization, qualification, experienceYears, departmentId, consultationFee, availableSlots, assignedPatients, isAvailable);
-        this.surgeriesPerformed = surgeriesPerformed;
-        this.surgeryTypes = surgeryTypes;
-        this.operationTheatreAccess = operationTheatreAccess;
-    }
+
 
     public Surgeon(String doctorId, String specialization, String qualification, int experienceYears, String departmentId, double consultationFee, List<String> availableSlots, List<String> assignedPatients, boolean isAvailable, int surgeriesPerformed, List<String> surgeryTypes, boolean operationTheatreAccess) {
         super(doctorId, specialization, qualification, experienceYears, departmentId, consultationFee, availableSlots, assignedPatients, isAvailable);
@@ -55,8 +52,9 @@ public class Surgeon extends Doctor implements Displayable {
     }
 
     public void setSurgeriesPerformed(int surgeriesPerformed) {
-        if (HelperUtils.isNegative(surgeriesPerformed)) {
+        while (HelperUtils.isNegative(surgeriesPerformed)) {
             System.out.println("Surgeries performed cannot be negative.");
+            surgeriesPerformed =scanner.nextInt();
             return;
         }
         this.surgeriesPerformed = surgeriesPerformed;

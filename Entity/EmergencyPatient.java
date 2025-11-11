@@ -3,10 +3,13 @@ package Entity;
 import Interface.Displayable;
 import Utils.HelperUtils;
 
+import java.util.Scanner;
+
 public class EmergencyPatient  extends InPatient  implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     String emergencyType ;
     String  arrivalMode; //(- Ambulance/Walk-in)
-     int triageLevel ;
+    int triageLevel ;
     boolean admittedViaER ;
 
 
@@ -19,8 +22,9 @@ public class EmergencyPatient  extends InPatient  implements Displayable {
     }
 
     public void setEmergencyType(String emergencyType) {
-        if (!HelperUtils.isValidString(emergencyType)){
+        while (!HelperUtils.isValidString(emergencyType)){
             System.out.println("Invalid emergency type.");
+            emergencyType= scanner.nextLine();
             return;
         }
         this.emergencyType = emergencyType;
@@ -31,8 +35,9 @@ public class EmergencyPatient  extends InPatient  implements Displayable {
     }
 
     public void setArrivalMode(String arrivalMode) {
-        if (!HelperUtils.isValidString(arrivalMode)){
+        while (!HelperUtils.isValidString(arrivalMode)){
             System.out.println("Invalid arrival mode.");
+            arrivalMode= scanner.nextLine();
             return;
         }
         this.arrivalMode = arrivalMode;
@@ -43,8 +48,9 @@ public class EmergencyPatient  extends InPatient  implements Displayable {
     }
 
     public void setTriageLevel(int triageLevel) {
-        if (triageLevel <= 1 || triageLevel >= 5){
+        while (triageLevel <= 1 || triageLevel >= 5){
             System.out.println("Triage level must be between 1 and 5.");
+            triageLevel= scanner.nextInt();
             return;
         }
         this.triageLevel = triageLevel;

@@ -5,9 +5,11 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class PersonBase implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     String id;
     String firstName;
     String lastName;
@@ -41,8 +43,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setFirstName(String firstName) {
-        if (!HelperUtils.isValidString(firstName)){
+        while (!HelperUtils.isValidString(firstName)){
             System.out.println("First name cannot be empty or null.");
+            firstName= scanner.nextLine();
             return;
         }
         this.firstName = firstName;
@@ -53,8 +56,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setLastName(String lastName) {
-        if (!HelperUtils.isValidString(lastName)){
+        while (!HelperUtils.isValidString(lastName)){
             System.out.println("Last name cannot be empty or null.");
+            lastName= scanner.nextLine();
             return;
         }
         this.lastName = lastName;
@@ -65,8 +69,10 @@ public class PersonBase implements Displayable {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
-        if (HelperUtils.isFutureDate(dateOfBirth)) {
+        while (HelperUtils.isFutureDate(dateOfBirth)) {
             System.out.println("Date of birth cannot be in the future.");
+            String dateInput = scanner.nextLine();
+            dateOfBirth = LocalDate.parse(dateInput);
             return;
         }
         this.dateOfBirth = dateOfBirth;
@@ -77,8 +83,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setGender(String gender) {
-        if (!HelperUtils.isValidString(gender) && gender.equalsIgnoreCase("F") && gender.equalsIgnoreCase("M")){
+        while (!HelperUtils.isValidString(gender) && gender.equalsIgnoreCase("F") && gender.equalsIgnoreCase("M")){
             System.out.println("Gender cannot be empty or null.");
+            gender= scanner.nextLine();
             return;}
         this.gender = gender;
     }
@@ -88,8 +95,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        if (!HelperUtils.isValidString(phoneNumber)){
+        while (!HelperUtils.isValidString(phoneNumber)){
             System.out.println("Phone number cannot be empty or null.");
+            phoneNumber= scanner.nextLine();
             return;
         }
         this.phoneNumber = phoneNumber;
@@ -100,8 +108,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setEmail(String email) {
-        if (!HelperUtils.isValidString(email) || !HelperUtils.isValidEmail(email)){
+        while (!HelperUtils.isValidString(email) || !HelperUtils.isValidEmail(email)){
             System.out.println("Email cannot be empty or null.");
+            email= scanner.nextLine();
             return;
         }
         this.email = email;
@@ -112,8 +121,9 @@ public class PersonBase implements Displayable {
     }
 
     public void setAddress(String address) {
-        if (!HelperUtils.isValidString(address)){
+        while (!HelperUtils.isValidString(address)){
             System.out.println("Address cannot be empty or null.");
+            address= scanner.nextLine();
             return;
         }
         this.address = address;

@@ -4,15 +4,17 @@ import Interface.Displayable;
 import Utils.HelperUtils;
 
 import java.util.List;
+import java.util.Scanner;
 
-public class Department  implements Displayable {
-    String departmentId ;
-    String departmentName ;
+public class Department implements Displayable {
+    Scanner scanner = new Scanner(System.in);
+    String departmentId;
+    String departmentName;
     String headDoctorId;
-    List<Doctor> doctors ;
-    List <Nurse>nurses ;
-    int bedCapacity ;
-    int availableBeds ;
+    List<Doctor> doctors;
+    List<Nurse> nurses;
+    int bedCapacity;
+    int availableBeds;
 
     public Department() {
 
@@ -57,8 +59,9 @@ public class Department  implements Displayable {
     }
 
     public void setDepartmentName(String departmentName) {
-        if (!HelperUtils.isValidString(departmentName)) {
+        while (!HelperUtils.isValidString(departmentName)) {
             System.out.println("Invalid department name. It cannot be null or empty.");
+            departmentName = scanner.nextLine();
 
         }
         this.departmentName = departmentName;
@@ -78,8 +81,9 @@ public class Department  implements Displayable {
     }
 
     public void setBedCapacity(int bedCapacity) {
-        if (HelperUtils.isNegative(bedCapacity)) {
+        while (HelperUtils.isNegative(bedCapacity)) {
             System.out.println("Bed capacity cannot be negative.");
+            bedCapacity = scanner.nextInt();
 
         }
         this.bedCapacity = bedCapacity;
@@ -90,15 +94,17 @@ public class Department  implements Displayable {
     }
 
     public void setAvailableBeds(int availableBeds) {
-        if (HelperUtils.isNegative(availableBeds) || availableBeds > bedCapacity) {
+        while (HelperUtils.isNegative(availableBeds) || availableBeds > bedCapacity) {
             System.out.println("Available beds cannot be negative or exceed bed capacity.");
+            availableBeds = scanner.nextInt();
 
         }
         this.availableBeds = availableBeds;
     }
+
     public void displayInfo() {
 
-        System.out.println("===== Entity.Department Details =====");
+        System.out.println("===== Department Details =====");
         System.out.println("Department ID: " + departmentId);
         System.out.println("Department Name: " + departmentName);
         System.out.println("Head Doctor ID: " + headDoctorId);
@@ -136,3 +142,4 @@ public class Department  implements Displayable {
 
 
 }
+

@@ -49,6 +49,7 @@ public class HelperUtils {
 
     // 4️ Checks not null/empty and matches a regex pattern
     public static boolean isValidString(String str, String regex) {
+
         return isValidString(str) && str.matches(regex);
     }
 

@@ -6,8 +6,10 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Scanner;
 
 public class InPatient extends Patient implements Billable {
+    Scanner scanner = new Scanner(System.in);
     LocalDate admissionDate ;
     LocalDate dischargeDate ;
     String roomNumber ;
@@ -31,20 +33,32 @@ public class InPatient extends Patient implements Billable {
         return admissionDate;
     }
 
+
     public void setAdmissionDate(LocalDate admissionDate) {
-        if(HelperUtils.isValidDate(admissionDate.toString())){
-            this.admissionDate = admissionDate;
+        Scanner scanner = new Scanner(System.in);
+        while (admissionDate == null || !HelperUtils.isValidDate(admissionDate.toString())) {
+            System.out.println("Invalid Admission Date. Please enter a valid date (YYYY-MM-DD): ");
+            String input = scanner.nextLine();
+
+            if (HelperUtils.isValidDate(input)) {
+                admissionDate = LocalDate.parse(input);
+            } else {
+                System.out.println("Invalid format or value. Try again.");
+            }
         }
+
         this.admissionDate = admissionDate;
     }
+
 
     public LocalDate getDischargeDate() {
         return dischargeDate;
     }
 
     public void setDischargeDate(LocalDate dischargeDate) {
-        if(!HelperUtils.isValidDate(dischargeDate.toString())){
-            System.out.println("Invalid Discharge Date");}
+        while (!HelperUtils.isValidDate(dischargeDate.toString())){
+            System.out.println("Invalid Discharge Date");
+            dischargeDate= LocalDate.parse(scanner.nextLine());}
         this.dischargeDate = dischargeDate;
     }
 
@@ -53,8 +67,9 @@ public class InPatient extends Patient implements Billable {
     }
 
     public void setRoomNumber(String roomNumber) {
-        if (HelperUtils.isValidString(roomNumber)){
+        while (!HelperUtils.isValidString(roomNumber)){
             System.out.println("Invalid Room Number");
+            roomNumber = scanner.nextLine();
         }
         this.roomNumber = roomNumber;
     }
@@ -64,8 +79,9 @@ public class InPatient extends Patient implements Billable {
     }
 
     public void setBedNumber(String bedNumber) {
-        if (HelperUtils.isValidString(bedNumber)){
+        if (!HelperUtils.isValidString(bedNumber)){
             System.out.println("Invalid Bed Number");
+            bedNumber = scanner.nextLine();
         }
         this.bedNumber = bedNumber;
     }
@@ -75,8 +91,9 @@ public class InPatient extends Patient implements Billable {
     }
 
     public void setAdmittingDoctorId(String admittingDoctorId) {
-        if (HelperUtils.isValidString(admittingDoctorId)){
+        while (!HelperUtils.isValidString(admittingDoctorId)){
             System.out.println("Invalid Admitting Doctor ID");
+            admittingDoctorId = scanner.nextLine();
         }
         this.admittingDoctorId = admittingDoctorId;
     }
@@ -86,8 +103,9 @@ public class InPatient extends Patient implements Billable {
     }
 
     public void setDailyCharges(double dailyCharges) {
-        if(HelperUtils.isNegative(dailyCharges)){
+        while (HelperUtils.isNegative(dailyCharges)){
             System.out.println("Daily Charges cannot be negative");
+            dailyCharges= scanner.nextDouble();
         }
         this.dailyCharges = dailyCharges;
     }

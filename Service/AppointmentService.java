@@ -58,18 +58,18 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
         System.out.println("================================");
     }
 
-    // Add Entity.Appointment (Interactive)
-    public static Appointment addPatient() {
+    // Add Appointment (Interactive)
+    public static Appointment addAppointment() {
         Appointment appointment = new Appointment();
         System.out.println("Adding Appointment");
         appointment.setAppointmentId(HelperUtils.generateId("APPT", 5));
         appointment.setPatientId(HelperUtils.generateId("PT", 5));
         appointment.setDoctorId(HelperUtils.generateId("Dr", 5));
-        appointment.setAppointmentTime(InputHelper.getStringInput("Enter appointment Time (HH:MM):"));
-        appointment.setReason(InputHelper.getStringInput("Enter the reason:"));
-        appointment.setAppointmentDate(InputHelper.getDateInput("Enter appointment Date (YYYY-MM-DD):"));
+        appointment.setAppointmentTime(InputHelper.getStringInput("Enter appointment Time (HH:MM)"));
+        appointment.setReason(InputHelper.getStringInput("Enter the reason"));
+        appointment.setAppointmentDate(InputHelper.getDateInput("Enter appointment Date (YYYY-MM-DD)"));
         System.out.println();
-        appointment.setNotes(InputHelper.getStringInput("Enter notes:"));
+        appointment.setNotes(InputHelper.getStringInput("Enter notes"));
 
         int statusChoice = InputHelper.getIntInput("""
         Enter status (number only):
@@ -286,6 +286,11 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
     }
 
     @Override
+    public void remove(String id) {
+
+    }
+
+    @Override
     public void getAll() {
         displayAllAppointments();
 
@@ -365,6 +370,33 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
 
         System.out.println("=====================================================\n");
     }
+    public static void addSampleAppointments() {
+
+        for (int i = 0; i < 15; i++) {
+            Appointment appointment = new Appointment();
+
+            appointment.setAppointmentId(HelperUtils.generateId("APP", 5));
+            appointment.setPatientId(HelperUtils.generateId("PT" , 5));
+            appointment.setDoctorId(HelperUtils.generateId("Dr ",5 ));
+            appointment.setAppointmentDate(LocalDate.now().plusDays(i));
+            appointment.setAppointmentTime((9 + (i % 8)) + ":00 AM"); // 9 AM to 4 PM range
+            String status;
+            switch (i % 4) {
+                case 0:  status = "Scheduled"; break;
+                case 1:  status = "Completed"; break;
+                case 2:  status = "Cancelled"; break;
+                default: status = "Rescheduled"; break;
+            }
+            appointment.setStatus(status);
+
+            appointment.setReason("Routine check-up " + (i + 1));
+            appointment.setNotes("Appointment created for testing. Doctor assigned: " + appointment.getDoctorId());
+
+            appointmentList.add(appointment);
+
+        }
+    }
+
 }
 
 

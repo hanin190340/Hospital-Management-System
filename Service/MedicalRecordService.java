@@ -22,14 +22,14 @@ public class MedicalRecordService implements Manageable, Searchable {
         medicalRecord.setRecordId(HelperUtils.generateId("MR", 6));
         medicalRecord.setPatientId(HelperUtils.generateId("PT", 5));
         medicalRecord.setDoctorId(HelperUtils.generateId("DR", 5));
-        medicalRecord.setDiagnosis(InputHelper.getStringInput("Enter the diagnosis:"));
+        medicalRecord.setDiagnosis(InputHelper.getStringInput("Enter the diagnosis"));
         System.out.println();
         medicalRecord.setPrescription(InputHelper.getStringInput("Enter the prescription "));
         System.out.println();
-        LocalDate date = InputHelper.getDateInput("Enter visit Date (YYYY-MM-DD):");
+        LocalDate date = InputHelper.getDateInput("Enter visit Date ");
         medicalRecord.setVisitDate(date);
-        medicalRecord.setTestResults(InputHelper.getStringInput("Enter test Results:"));
-        System.out.println("Enter notes:  ");
+        medicalRecord.setTestResults(InputHelper.getStringInput("Enter test Results"));
+        System.out.println("Enter notes ");
         return medicalRecord;
     }
 
@@ -149,6 +149,11 @@ public class MedicalRecordService implements Manageable, Searchable {
     }
 
     @Override
+    public void remove(String id) {
+
+    }
+
+    @Override
     public void getAll() {
         displayAllMedicalRecord();
 
@@ -208,6 +213,24 @@ public class MedicalRecordService implements Manageable, Searchable {
             p.displayInfo();
         }
     }
+    public static void addSampleMedicalRecord() {
+        List<MedicalRecord> medicalRecords = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            MedicalRecord medicalRecord = new MedicalRecord();
+            medicalRecord.setRecordId(HelperUtils.generateId("MR", 5));
+            medicalRecord.setPatientId(HelperUtils.generateId("PT" , 5));
+            medicalRecord.setDoctorId(HelperUtils.generateId("DR" ,  5));
+            medicalRecord.setVisitDate(LocalDate.now().minusDays(i * 7)); // weekly visits
+            medicalRecord.setDiagnosis("Diagnosis example " + (i + 1));
+            medicalRecord.setPrescription("Prescription example " + (i + 1));
+            medicalRecord.setTestResults("Test results example " + (i + 1));
+            medicalRecord.setNotes("Notes for visit " + (i + 1));
+            medicalRecords.add(medicalRecord);
+
+        }
+
+    }
+
 }
 
 

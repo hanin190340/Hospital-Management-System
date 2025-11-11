@@ -51,15 +51,15 @@ public class GeneralPractitioner  extends Doctor implements Displayable {
     @Override
     public void displayInfo(){
         super.displayInfo();
-            System.out.println("===== Entity.Consultant Details =====");
-            System.out.println("Walk-in Available: " + walkinAvailable);
-            System.out.println("Home Visit Available: " + homeVisitAvailable);
-            System.out.println("Vaccination Certified: " + vaccinationCertified);
+        System.out.println("===== Entity.Consultant Details =====");
+        System.out.println("Walk-in Available: " + walkinAvailable);
+        System.out.println("Home Visit Available: " + homeVisitAvailable);
+        System.out.println("Vaccination Certified: " + vaccinationCertified);
 
-            System.out.println("==============================");
-        }
-public void scheduleHomeVisit() {}
+        System.out.println("==============================");
+    }
+    public void scheduleHomeVisit() {}
     public void administerVaccine() {}
 
-    }
+}
 

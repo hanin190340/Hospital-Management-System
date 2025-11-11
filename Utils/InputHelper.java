@@ -10,12 +10,12 @@ import java.util.Scanner;
 
         // ------------------ String Input ------------------
         public static String getStringInput(String prompt) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt);
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input)) {
                 System.out.println("⚠ Invalid input! Please enter a non-empty string.");
-                System.out.print(prompt + ": ");
+                System.out.print(prompt + " :");
                 input = scanner.nextLine().trim();
             }
             return input;
@@ -23,12 +23,12 @@ import java.util.Scanner;
 
         // ------------------ Integer Input ------------------
         public static int getIntInput(String prompt) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt );
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input) || !input.matches("-?\\d+")) {
                 System.out.println("⚠ Please enter a valid integer!");
-                System.out.print(prompt + ": ");
+                System.out.print(prompt+" :");
                 input = scanner.nextLine().trim();
             }
             return Integer.parseInt(input);
@@ -36,7 +36,7 @@ import java.util.Scanner;
 
         // Overloaded with range validation
         public static int getIntInput(String prompt, int min, int max) {
-            int num = getIntInput(prompt);
+            int num = getIntInput(prompt+" :");
             while (!HelperUtils.isValidNumber(num, min, max)) {
                 System.out.println("⚠ Please enter a number between " + min + " and " + max + ".");
                 num = getIntInput(prompt);
@@ -46,12 +46,12 @@ import java.util.Scanner;
 
         // ------------------ Double Input ------------------
         public static double getDoubleInput(String prompt) {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt + " :");
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input) || !input.matches("-?\\d+(\\.\\d +)?")) {
                 System.out.println("⚠ Please enter a valid number!");
-                System.out.print(prompt + ": ");
+                System.out.print(prompt + " :");
                 input = scanner.nextLine().trim();
             }
 

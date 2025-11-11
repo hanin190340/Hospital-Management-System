@@ -16,22 +16,21 @@ public class DepartmentService implements Manageable, Searchable {
     public static List<Department> departmentList = new ArrayList<>();
 
 
-
     public static Department addDepartment() {
         Department department = new Department();
         System.out.println("=== Adding Department ===");
         department.setDepartmentId(HelperUtils.generateId("DEPT", 5));
         department.setHeadDoctorId(HelperUtils.generateId("Dr", 5));
 
-        department.setDepartmentName(InputHelper.getStringInput("Enter Department Name: "));
-        department.setBedCapacity(InputHelper.getIntInput("Enter Bed Capacity: "));
-        department.setAvailableBeds(InputHelper.getIntInput("Enter Available Beds: "));
+        department.setDepartmentName(InputHelper.getStringInput("Enter Department Name"));
+        department.setBedCapacity(InputHelper.getIntInput("Enter Bed Capacity "));
+        department.setAvailableBeds(InputHelper.getIntInput("Enter Available Beds"));
         return department;
     }
 
 
     public static void save(Department department) {
-        if (HelperUtils.isNull(department)){
+        if (HelperUtils.isNull(department)) {
             System.out.println("Error: Department cannot be null !!  Save operation cancelled.");
         }
         departmentList.add(department);
@@ -40,7 +39,7 @@ public class DepartmentService implements Manageable, Searchable {
 
 
     public static void viewDepartmentDetails(String departmentId) {
-        if (departmentList.isEmpty() ) {
+        if (departmentList.isEmpty()) {
             System.out.println("No departments available.");
             return;
         }
@@ -92,7 +91,6 @@ public class DepartmentService implements Manageable, Searchable {
         System.out.println("Department with ID " + departmentId + " not found.");
         return false;
     }
-
 
 
     public static void assignDoctorToDepartment(String doctorId, String departmentId) {
@@ -252,6 +250,7 @@ public class DepartmentService implements Manageable, Searchable {
         }
         System.out.println("=========================================\n");
     }
+
     //  Generate Department Occupancy Report
     public static void generateDepartmentOccupancyReport() {
         if (departmentList.isEmpty()) {
@@ -280,7 +279,6 @@ public class DepartmentService implements Manageable, Searchable {
     }
 
 
-
     // Interface implementations (not used yet)
     @Override
     public void add(Object entity) {
@@ -289,6 +287,11 @@ public class DepartmentService implements Manageable, Searchable {
         } else {
             System.out.println("Invalid entity Expected Department.");
         }
+    }
+
+    @Override
+    public void remove(String id) {
+
     }
 
     @Override
@@ -329,5 +332,63 @@ public class DepartmentService implements Manageable, Searchable {
             System.out.println("No Department found for Department ID: " + id);
         }
     }
+
+    public static void addSampleDepartments() {
+        // --- Department 1: Cardiology ---
+        Department dept1 = new Department();
+        dept1.setDepartmentId("DEPT001");
+        dept1.setDepartmentName("Cardiology");
+        dept1.setHeadDoctorId("DR001");
+        dept1.setBedCapacity(50);
+        dept1.setAvailableBeds(10);
+        List<Doctor> cardioDoctors = Arrays.asList(
+                new Doctor(true, "DR001", "DEPT001"),
+                new Doctor(true, "DR002", "DEPT001"));
+        List<Nurse> cardioNurses = Arrays.asList(
+                new Nurse("DEPT001", "NUR001", "Morning"),
+                new Nurse("DEPT001", "NUR002", "Evening"));
+        dept1.setDoctors(cardioDoctors);
+        dept1.setNurses(cardioNurses);
+
+        // --- Department 2: Neurology ---
+        Department dept2 = new Department();
+        dept2.setDepartmentId("DEPT002");
+        dept2.setDepartmentName("Neurology");
+        dept2.setHeadDoctorId("DR002");
+        dept2.setBedCapacity(40);
+        dept2.setAvailableBeds(5);
+
+        List<Doctor> neuroDoctors = Arrays.asList(
+                new Doctor(false, "DR003", "DEPT002"),
+                new Doctor(true, "DR004", "DEPT002"));
+
+        List<Nurse> neuroNurses = Arrays.asList(
+                new Nurse("DEPT002", "NUR003", "Night"),
+                new Nurse("DEPT002", "NUR004", "Morning"));
+        dept2.setDoctors(neuroDoctors);
+        dept2.setNurses(neuroNurses);
+        // --- Department 3: Pediatrics ---
+        Department dept3 = new Department();
+        dept3.setDepartmentId("DEPT003");
+        dept3.setDepartmentName("Pediatrics");
+        dept3.setHeadDoctorId("DR003");
+        dept3.setBedCapacity(60);
+        dept3.setAvailableBeds(15);
+
+        List<Doctor> pediDoctors = Arrays.asList(
+                new Doctor(true, "DR005", "DEPT003"),
+                new Doctor(false, "DR006", "DEPT003"));
+        List<Nurse> pediNurses = Arrays.asList(
+                new Nurse("DEPT003", "NUR005", "Evening"),
+                new Nurse("DEPT003", "NUR006", "Morning"));
+        dept3.setDoctors(pediDoctors);
+        dept3.setNurses(pediNurses);
     }
+
+}
+
+
+
+
+
 

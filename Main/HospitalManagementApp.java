@@ -1,17 +1,15 @@
 package Main;
 
 import Entity.*;
-import Service.DoctorService;
-import Service.MedicalRecordService;
-import Service.NurseService;
-import Service.PatientService;
-import Service.DepartmentService;
+import Service.*;
+import Utils.InputHelper;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
 import static Service.DoctorService.addSurgeon;
+import static Service.DoctorService.save;
 
 public class HospitalManagementApp {
     public static Scanner scanner = new Scanner(System.in);
@@ -25,21 +23,30 @@ public class HospitalManagementApp {
     public static Integer PatientMenu = 0;
 
     public static void main(String[] args) {
+        System.out.println("Welcome to Hospital Management System");
+        MainMenu();
+
+            addSampleDataForAll();
+        }
+
+
+
+        public static void MainMenu() {
         while (mainMenu != 8) {
             showMainMenu();
-            mainMenu = scanner.nextInt();
+            mainMenu = InputHelper.getIntInput("please enter a valid option",1,8);
 
             switch (mainMenu) {
                 case 1 -> {
                     PatientMenu = 0;
                     while (PatientMenu != 10) {
                         showPatientMenu();
-                        PatientMenu = scanner.nextInt();
+                        PatientMenu = InputHelper.getIntInput("please enter a valid option",1,10);
 
                         switch (PatientMenu) {
                             case 1 -> {
-                                Patient patient = PatientService.addPatient();
-                                PatientService.save(patient);
+                                PatientService patientService = new PatientService();
+                                patientService.add( PatientService.addPatient());
                             }
                             case 2 -> {
                                 Patient patient = PatientService.addInPatient();
@@ -53,41 +60,40 @@ public class HospitalManagementApp {
                                 Patient patient = PatientService.addEmergencyPatient();
                                 PatientService.save(patient);
                             }
-                            case 5 -> PatientService.displayAllPatients();
+                            case 5 -> {
+                                PatientService.addSamplePatients();
+                                PatientService service=new PatientService();
+                                service.getAll();
+
+                            }
+
                             case 6 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Patient name  to search: ");
-                                String patientname = scanner.nextLine();
-                                PatientService.searchPatientsByName(patientname);
+                                scanner.nextLine();
+                                System.out.print("Enter Patient ID to search : ");
+                                String patientId = scanner.nextLine();
+                                PatientService service=new PatientService();
+                                service.searchById(patientId);
                             }
 
                                 case 7 -> {
-                                    scanner.nextLine(); // Consume newline
                                     System.out.print("Enter Patient ID to update: ");
                                     String patientId = scanner.nextLine();
-                                    System.out.println("Enter updated patient details:");
-                                    Patient updatedPatient = PatientService.addPatient();
-                                    boolean updated = PatientService.editPatient(patientId, updatedPatient);
-                                    if (updated) {
-                                        System.out.println("Patient updated successfully.");
-                                    } else {
-                                        System.out.println("Patient with ID " + patientId + " not found.");
-                                    }
+                                    PatientService.editPatient(patientId);
+
                                 }
 
                             case 8 -> {
-                                scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Patient ID to remove: ");
                                 String patientIdToRemove = scanner.nextLine();
-                                PatientService.remove(patientIdToRemove);
+                                PatientService service = new PatientService();
+                                service.remove(patientIdToRemove);
                             }
 
-                            case 9 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Patient ID to view medical history: ");
-                                String patientIdForHistory = scanner.nextLine();
-                                MedicalRecordService.getRecordsByPatientId(patientIdForHistory);
-                            }
+                            //case 9 -> {
+                               // System.out.print("Enter Patient ID to view medical history: ");
+                                //String patientIdForHistory = scanner.nextLine();
+                               // MedicalRecordService.getRecordsByPatientId(patientIdForHistory);
+                           // }
 
                             case 10 -> {
                                 System.out.println("Exit from menu");
@@ -102,34 +108,35 @@ public class HospitalManagementApp {
                     doctoMenu = 0;
                     while (doctoMenu != 11) {
                         showDoctorMenu();
-                        doctoMenu = scanner.nextInt();
+                        doctoMenu = InputHelper.getIntInput("please enter a valid option",1,11);
 
                         switch (doctoMenu) {
                             case 1 -> {
-                                Doctor doctor = DoctorService.addDoctor();
-                                DoctorService.save(doctor);
+
+                                DoctorService service = new DoctorService();
+                                service.add(DoctorService.addDoctor());
                             }
                             case 2 -> {
 
-                                //Doctor doctor = DoctorService.addSurgeon();
-                                DoctorService.save(addSurgeon());
+                                DoctorService service = new DoctorService();
+                                service.add(DoctorService.addSurgeon());
 
                             }
                             case 3 -> {
-                                Doctor doctor = DoctorService.addConsultant();
-                                DoctorService.save(doctor);
+                                DoctorService service = new DoctorService();
+                                service.add(DoctorService.addConsultant());
 
                             }
                             case 4-> {
-                                Doctor doctor = DoctorService.addGeneralPractitioner();
-                                DoctorService.save(doctor);
+                                DoctorService service = new DoctorService();
+                                service.add(DoctorService.addGeneralPractitioner());
                             }
                               case 5 -> {
+                                DoctorService.addSampleDoctors();
                                 DoctorService.displayAllDoctor();
                             }
 
                         case 6 -> {
-                                scanner.nextLine();
                                 System.out.print("Enter specialization to search: ");
                                 String specialization = scanner.nextLine();
                                 DoctorService.getDoctorsBySpecialization(specialization);
@@ -139,7 +146,6 @@ public class HospitalManagementApp {
                         }
 
                             case 8 -> {
-                                scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Doctor ID to assign to: ");
                                 String doctorIdAssign = scanner.nextLine();
                                 System.out.print("Enter Patient ID to assign: ");
@@ -154,20 +160,12 @@ public class HospitalManagementApp {
                             }
 
                             case 9 -> {
-                                scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Doctor ID to update: ");
                                 String doctorId = scanner.nextLine();
-                                System.out.println("Enter updated doctor details:");
-                                Doctor updatedDoctor = DoctorService.addDoctor();
-                                boolean updated = DoctorService.editDoctor(doctorId, updatedDoctor);
-                                if (updated) {
-                                    System.out.println("Doctor updated successfully.");
-                                } else {
-                                    System.out.println("Doctor with ID " + doctorId + " not found.");
-                                }
+                                DoctorService.editDoctorById(doctorId);
+
                         }
                             case 10 -> {
-                                scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Doctor ID to remove: ");
                                 String doctorIdToRemove = scanner.nextLine();
                                 DoctorService.removeDoctor(doctorIdToRemove);
@@ -186,7 +184,7 @@ public class HospitalManagementApp {
                     nurseMenu = 0;
                     while (nurseMenu != 8) {
                         showNurseMenu();
-                        nurseMenu = scanner.nextInt();
+                        nurseMenu = InputHelper.getIntInput("please enter a valid option",1,8);
 
                         switch (nurseMenu) {
                             case 1 -> {
@@ -194,6 +192,7 @@ public class HospitalManagementApp {
                                 NurseService.save(nurse);
                             }
                             case 2 -> {
+                                NurseService.addSampleNurses();
                                 NurseService.displayAllNurse();
                             }
                             case 3 -> {
@@ -254,14 +253,17 @@ public class HospitalManagementApp {
                     appointmentMenu = 0;
                     while (appointmentMenu != 10) {
                         showAppointmentMenu();
-                        appointmentMenu = scanner.nextInt();
+                        appointmentMenu = InputHelper.getIntInput("please enter a valid option",1,10);
 
                         switch (appointmentMenu) {
                             case 1 -> {
-                                Appointment appointment = Service.AppointmentService.addPatient();
+                                Appointment appointment = Service.AppointmentService.addAppointment();
                                 Service.AppointmentService.save(appointment);
                             }
-                            case 2 -> Service.AppointmentService.displayAllAppointments();
+                            case 2 -> {
+                                    AppointmentService.addSampleAppointments();
+                                    AppointmentService.displayAllAppointments();
+                            }
                             case 3 -> {
                                 scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Patient ID to view appointments: ");
@@ -289,13 +291,13 @@ public class HospitalManagementApp {
                                 Service.AppointmentService.rescheduleAppointment(appointmentId, LocalDate.parse(newDate));
                             }
                             case 7 -> {
-                                scanner.nextLine(); // Consume newline
+                                scanner.nextLine();
                                 System.out.print("Enter Appointment ID to cancel: ");
                                 String appointmentIdToCancel = scanner.nextLine();
                                 Service.AppointmentService.cancelAppointment(appointmentIdToCancel);
                             }
                             case 8 -> {
-                                scanner.nextLine(); // Consume newline
+                                scanner.nextLine();
                                 System.out.print("Enter Appointment ID to complete: ");
                                 String appointmentIdToComplete = scanner.nextLine();
                                 Service.AppointmentService.completeAppointment(appointmentIdToComplete);
@@ -316,14 +318,17 @@ public class HospitalManagementApp {
                     medicalRecordsMenu = 0;
                     while (medicalRecordsMenu != 8) {
                         showMedicalRecordsMenu();
-                        medicalRecordsMenu = scanner.nextInt();
+                        medicalRecordsMenu = InputHelper.getIntInput("please enter a valid option",1,8);
 
                         switch (medicalRecordsMenu) {
                             case 1 -> {
                                 MedicalRecord medicalRecord = MedicalRecordService.addMedicalRecord();
                                 MedicalRecordService.save(medicalRecord);
                             }
-                            case 2 -> MedicalRecordService.displayAllMedicalRecord();
+                            case 2 ->  {
+                                MedicalRecordService.addSampleMedicalRecord();
+                                MedicalRecordService.displayAllMedicalRecord();
+                            }
                             case 3 -> {
                                 scanner.nextLine(); // Consume newline
                                 System.out.print("Enter Patient ID to view records: ");
@@ -375,7 +380,7 @@ public class HospitalManagementApp {
                     departmentMenu = 0;
                     while (departmentMenu != 8) {
                         showDepartmentMenu();
-                        departmentMenu = scanner.nextInt();
+                        departmentMenu = InputHelper.getIntInput("please enter a valid option",1,8);
 
                         switch (departmentMenu) {
                             case 1 ->{
@@ -383,6 +388,7 @@ public class HospitalManagementApp {
                                 DepartmentService.save(department);
                             }
                             case 2 ->{
+                                DepartmentService.addSampleDepartments();
                                 DepartmentService.displayAllDepartments();
                             }
                             case 3 ->{
@@ -439,7 +445,7 @@ public class HospitalManagementApp {
                     reportsAndStatisticsMenu = 0;
                     while (reportsAndStatisticsMenu != 6) {
                         showReportsAndStatisticsMenu();
-                        reportsAndStatisticsMenu = scanner.nextInt();
+                        reportsAndStatisticsMenu = InputHelper.getIntInput("please enter a valid option",1,6);
 
                         switch (reportsAndStatisticsMenu) {
                             case 1 -> {
@@ -494,7 +500,6 @@ public class HospitalManagementApp {
                 8- Exit
                 """);
             System.out.println("==============================");
-            System.out.print("Please enter your choice: ");
         }
 
     public static void showDoctorMenu () {
@@ -507,13 +512,13 @@ public class HospitalManagementApp {
                 5-View All Doctors
                 6-Search Doctor by Specialization
                 7-View Available Doctors
-                8-Assign Patient to Entity.Doctor
+                8-Assign Patient to Doctor
                 9-Update Doctor Information
                 10-Remove Doctor
                 11 - Exit
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
+
     }
     public static void showPatientMenu () {
         System.out.println("===== Patient Management=====\n");
@@ -530,7 +535,7 @@ public class HospitalManagementApp {
                 10 - Exit
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
+
     }
     public static void showNurseMenu () {
         System.out.println("===== Nurse Management=====\n");
@@ -547,7 +552,6 @@ public class HospitalManagementApp {
              
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
     }
     public static void showAppointmentMenu () {
         System.out.println("===== Appointment Management=====\n");
@@ -564,7 +568,6 @@ public class HospitalManagementApp {
                 10 - Exit
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
     }
     public static void showMedicalRecordsMenu () {
         System.out.println("=====Medical Records  Management=====\n");
@@ -580,13 +583,12 @@ public class HospitalManagementApp {
                 
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
     }
     public static void showDepartmentMenu () {
         System.out.println("=====Department Management=====\n");
 
         System.out.println("""
-                1-Add Entity.Department
+                1-Add Department
                 2-View All Departments
                 3-View Department Details
                 4-Assign Doctor to Entity.Department
@@ -597,7 +599,6 @@ public class HospitalManagementApp {
                 
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
     }
     public static void showReportsAndStatisticsMenu () {
         System.out.println("=====Reports And Statistics Management=====\n");
@@ -612,7 +613,15 @@ public class HospitalManagementApp {
                 
                 """);
         System.out.println("==============================");
-        System.out.print("Please enter your choice: ");
+    }
+    public static void addSampleDataForAll() {
+        PatientService.addSamplePatients();
+        DoctorService.addSampleDoctors();
+        NurseService.addSampleNurses();
+        DepartmentService.addSampleDepartments();
+        MedicalRecordService.addSampleMedicalRecord();
+        AppointmentService.addSampleAppointments();
+
     }
 
     }

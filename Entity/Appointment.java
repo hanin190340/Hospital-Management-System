@@ -5,8 +5,10 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class Appointment implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     private String appointmentId;
     private String patientId;
     private String doctorId;
@@ -76,8 +78,9 @@ public class Appointment implements Displayable {
     }
 
     public void setAppointmentTime(String appointmentTime) {
-        if (!HelperUtils.isValidDate(appointmentTime)) {
+        while (!HelperUtils.isValidDate(appointmentTime)) {
             System.out.println(" is not valid time ");
+            appointmentTime = scanner.nextLine();
 
         }
         this.appointmentTime = appointmentTime;
@@ -87,22 +90,31 @@ public class Appointment implements Displayable {
         return status;
     }
 
+
     public void setStatus(String status) {
-        if (!status.equals("Scheduled") && !status.equals("Completed") &&
-                !status.equals("Cancelled") && !status.equals("Rescheduled")) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Keep asking until a valid status is entered
+        while (!status.equalsIgnoreCase("Scheduled") && !status.equalsIgnoreCase("Completed") &&
+                !status.equalsIgnoreCase("Cancelled") && !status.equalsIgnoreCase("Rescheduled")) {
+
             System.out.println("Invalid status. Allowed values are: Scheduled, Completed, Cancelled, Rescheduled.");
-            return;
+            System.out.print("Please enter a valid status: ");
+            status = scanner.nextLine();
         }
+
         this.status = status;
     }
+
 
     public String getReason() {
         return reason;
     }
 
     public void setReason(String reason) {
-        if (!HelperUtils.isNull(reason) || !HelperUtils.isValidString(reason)) {
+        while (!HelperUtils.isNull(reason) || !HelperUtils.isValidString(reason)) {
             System.out.println("Reason cannot be null or empty.");
+            reason = scanner.nextLine();
             return;
 
         }
@@ -114,8 +126,9 @@ public class Appointment implements Displayable {
     }
 
     public void setNotes(String notes) {
-        if (!HelperUtils.isNull(notes) || !HelperUtils.isValidString(notes)) {
+        while (!HelperUtils.isNull(notes) || !HelperUtils.isValidString(notes)) {
             System.out.println("Notes cannot be null or empty.");
+            notes = scanner.nextLine();
             return;
         }
         this.notes = notes;
@@ -156,5 +169,6 @@ public class Appointment implements Displayable {
         System.out.println("Notes added by " + addedBy + " on " + timestamp + ": " + notes);
     }
 }
+
 
 

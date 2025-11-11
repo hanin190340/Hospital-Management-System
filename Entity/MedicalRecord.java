@@ -4,9 +4,13 @@ import Interface.Displayable;
 import Utils.HelperUtils;
 
 import java.time.LocalDate;
+import java.util.Scanner;
 import java.util.UUID;
 
+import static Main.HospitalManagementApp.scanner;
+
 public class MedicalRecord implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     String recordId;
     String patientId;
     String doctorId;
@@ -59,20 +63,31 @@ public class MedicalRecord implements Displayable {
         return visitDate;
     }
 
+
     public void setVisitDate(LocalDate visitDate) {
+        while (visitDate == null || !HelperUtils.isValidDate(visitDate.toString())) {
+            System.out.println("Invalid visit date. Please enter a valid date (YYYY-MM-DD): ");
+            String input = scanner.nextLine();
+
+            if (HelperUtils.isValidDate(input)) {
+                visitDate = LocalDate.parse(input);
+            } else {
+                System.out.println("Invalid format or value. Try again.");
+            }
+        }
+
         this.visitDate = visitDate;
     }
+
 
     public String getDiagnosis() {
         return diagnosis;
     }
 
     public void setDiagnosis(String diagnosis) {
-        if(HelperUtils.isValidString(diagnosis)){
-            System.out.println("Valid diagnosis provided.");
-            this.diagnosis = diagnosis;
-        } else {
-            this.diagnosis = "Not Specified";
+        while (!HelperUtils.isValidString(diagnosis)) {
+            System.out.println("Invalid diagnosis provided. Please enter a valid diagnosis: ");
+            diagnosis = scanner.nextLine();
         }
         this.diagnosis = diagnosis;
     }
@@ -81,25 +96,43 @@ public class MedicalRecord implements Displayable {
         return prescription;
     }
 
+
     public void setPrescription(String prescription) {
+        while (!HelperUtils.isValidString(prescription)) {
+            System.out.println("Invalid prescription provided. Please enter a valid prescription: ");
+            prescription = scanner.nextLine();
+        }
+
         this.prescription = prescription;
     }
+
 
     public String getTestResults() {
         return testResults;
     }
 
     public void setTestResults(String testResults) {
+        while (!HelperUtils.isValidString(testResults)) {
+            System.out.println("Invalid test results provided. Please enter valid test results: ");
+            testResults = scanner.nextLine();
+        }
+
         this.testResults = testResults;
     }
+
 
     public String getNotes() {
         return notes;
     }
 
     public void setNotes(String notes) {
+        while (!HelperUtils.isValidString(notes)) {
+            System.out.println("Invalid notes provided. Please enter valid notes: ");
+            notes = scanner.nextLine();
+        }
         this.notes = notes;
     }
+
     public void displayInfo() {
         System.out.println("===== Medical Record =====");
         System.out.println("Record ID: " + recordId);

@@ -7,7 +7,6 @@ import Utils.HelperUtils;
 import Utils.InputHelper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class NurseService implements Manageable, Searchable {
@@ -40,7 +39,12 @@ public void add(Object entity) {
     }
 }
 
-@Override
+    @Override
+    public void remove(String id) {
+
+    }
+
+    @Override
 public void getAll() {
     displayAllNurse();
 }
@@ -71,16 +75,16 @@ public void searchById(String id) {
 
     public static Nurse addNurse () {
         Nurse nurse = new Nurse();
-        System.out.println("Adding Entity.Nurse");
+        System.out.println("Adding Nurse");
         nurse.setId(HelperUtils.generateId("NUR",5));
 
-        nurse.setFirstName(InputHelper.getStringInput("Enter the FirstName:"));
-        nurse.setLastName(InputHelper.getStringInput("Enter the lastName:"));
-        nurse.setDateOfBirth(InputHelper.getDateInput("Enter date of birth (YYYY-MM-DD):"));
-        nurse.setGender(InputHelper.getStringInput("Enter gender (M/F): "));
-        nurse.setPhoneNumber(InputHelper.getStringInput("Enter phoneNumber: "));
-        nurse.setEmail(InputHelper.getStringInput("Enter email: "));
-        nurse.setAddress(InputHelper.getStringInput("Enter address : "));
+        nurse.setFirstName(InputHelper.getStringInput("Enter the FirstName"));
+        nurse.setLastName(InputHelper.getStringInput("Enter the lastName"));
+        nurse.setDateOfBirth(InputHelper.getDateInput("Enter date of birth (YYYY-MM-DD)"));
+        nurse.setGender(InputHelper.getStringInput("Enter gender (M/F) "));
+        nurse.setPhoneNumber(InputHelper.getStringInput("Enter phoneNumber "));
+        nurse.setEmail(InputHelper.getStringInput("Enter email "));
+        nurse.setAddress(InputHelper.getStringInput("Enter address"));
         int shiftChoice = InputHelper.getIntInput("""
         Enter shift (number only):
         1. Morning
@@ -106,11 +110,11 @@ public void searchById(String id) {
 
         while (Input) {
 
-            String record = InputHelper.getStringInput("Enter assigned Patients #" + assignedNumber + ":");
+            String record = InputHelper.getStringInput("Enter assigned Patients #" + assignedNumber  );
             assignedInput.add(record);
             assignedNumber++;
 
-            String exitFlag = InputHelper.getStringInput("Press 'q' and Enter to stop, or just press Enter to add another:");
+            String exitFlag = InputHelper.getStringInput("Press 'q' and Enter to stop, or just press any letter to add another");
             if (exitFlag.equalsIgnoreCase("q")) {
                 Input = false;
             }
@@ -123,7 +127,7 @@ public void searchById(String id) {
 
     public static void save(Nurse nurse) {
         ListOfNurse.add(nurse);
-        System.out.println("Entity.Nurse added successfully!\n");
+        System.out.println("Nurse added successfully!\n");
     }
     public static boolean editNurse(String nurseId, Nurse updatedNurse) {
         for (int i = 0; i < ListOfNurse.size(); i++) {
@@ -206,6 +210,28 @@ public void searchById(String id) {
 
         if (!found) {
             System.out.println("No nurses found in the " + shift + " shift.");
+        }
+    }
+    public static void  addSampleNurses() {
+        for (int i = 0; i < 6; i++) {
+            Nurse nurse = new Nurse();
+            nurse.setNurseId(HelperUtils.generateId("NUR", 5));
+            nurse.setFirstName("Alice" + i);
+            nurse.setLastName("Johnson" + i);
+            nurse.setEmail("alice.johnson" + i + "@hospital.com");
+            nurse.setAddress("Muscat, Oman");
+            nurse.setPhoneNumber("+96890123456");
+            nurse.setGender("F");
+            nurse.setDateOfBirth(LocalDate.of(1990, 5, 15));
+            nurse.setId(HelperUtils.generateId(8));
+            nurse.setDepartmentId(HelperUtils.generateId("DEP", 6));
+            nurse.setShift("Morning");
+            nurse.setQualification("BSc Nursing");
+            List<String> assignedPatients = Arrays.asList("Patient A", "Patient B");
+            nurse.setAssignedPatients(assignedPatients);
+            ListOfNurse.add(nurse);
+
+
         }
     }
 

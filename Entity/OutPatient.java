@@ -5,11 +5,13 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 import static Main.HospitalManagementApp.scanner;
 
 public class OutPatient  extends Patient implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     int visitCount ;
     LocalDate lastVisitDate;
     String  preferredDoctorId ;
@@ -51,8 +53,10 @@ public class OutPatient  extends Patient implements Displayable {
     }
 
     public void setLastVisitDate(LocalDate lastVisitDate) {
-        if (HelperUtils.isFutureDate(lastVisitDate)) {
+        while (HelperUtils.isFutureDate(lastVisitDate)) {
             System.out.println("Last visit date cannot be in the future.");
+            String dateInput = scanner.nextLine();
+            lastVisitDate = LocalDate.parse(dateInput);
         }
         this.lastVisitDate = lastVisitDate;
     }
@@ -62,8 +66,10 @@ public class OutPatient  extends Patient implements Displayable {
     }
 
     public void setVisitCount(int visitCount) {
-        if (HelperUtils.isNegative(visitCount)) {
+        while (HelperUtils.isNegative(visitCount)) {
             System.out.println("Visit count cannot be negative.");
+            String countInput = scanner.nextLine();
+            visitCount = Integer.parseInt(countInput);
         }
         this.visitCount = visitCount;
     }

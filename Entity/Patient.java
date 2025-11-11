@@ -4,10 +4,12 @@ import Interface.Displayable;
 import Utils.HelperUtils;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Scanner;
 
 public class Patient extends PersonBase implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     String patientId;
     String bloodGroup;
      List<String> allergies ;
@@ -27,11 +29,16 @@ public class Patient extends PersonBase implements Displayable {
     }
 
     public void setBloodGroup(String bloodGroup) {
-        if (!HelperUtils.isValidString(bloodGroup)){
-            System.out.println("Invalid blood group.");
+        List<String> validBloodGroups = Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-");
+        if (bloodGroup != null && validBloodGroups.contains(bloodGroup.toUpperCase())) {
+            this.bloodGroup = bloodGroup.toUpperCase();
+        } else {
+            this.bloodGroup = "Unknown"; // or throw exception
         }
-        this.bloodGroup = bloodGroup;
     }
+
+
+
 
     public List<String> getAllergies() {
         return allergies;
@@ -46,8 +53,9 @@ public class Patient extends PersonBase implements Displayable {
     }
 
     public void setEmergencyContact(String emergencyContact) {
-        if (!HelperUtils.isValidString(emergencyContact)){
+        while (!HelperUtils.isValidString(emergencyContact)){
             System.out.println("Invalid emergency contact.");
+            emergencyContact = scanner.nextLine();
         }
         this.emergencyContact = emergencyContact;
     }
@@ -57,8 +65,10 @@ public class Patient extends PersonBase implements Displayable {
     }
 
     public void setRegistrationDate(LocalDate registrationDate) {
-        if (HelperUtils.isFutureDate(registrationDate)){
+        while (HelperUtils.isFutureDate(registrationDate)){
             System.out.println("Registration date cannot be in the future.");
+            String dateInput = scanner.nextLine();
+            registrationDate = LocalDate.parse(dateInput);
         }
         this.registrationDate = registrationDate;
     }

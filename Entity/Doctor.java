@@ -6,9 +6,11 @@ import Utils.HelperUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Doctor extends PersonBase implements Displayable {
+    Scanner scanner = new Scanner(System.in);
     String doctorId;
     String specialization;
     String qualification;
@@ -27,25 +29,32 @@ public class Doctor extends PersonBase implements Displayable {
 
     }
 
+
     public boolean isAvailable() {
         return isAvailable;
     }
 
     public void setAvailable(boolean available) {
+
         this.isAvailable = available;
     }
-
-    public Doctor(String id, String firstName, String lastName, LocalDate dateOfBirth, String gender, String phoneNumber, String email, String address, String doctorId, String specialization, String qualification, int experienceYears, String departmentId, double consultationFee, List<String> availableSlots, List<String> assignedPatients, boolean isAvailable) {
-        super(id, firstName, lastName, dateOfBirth, gender, phoneNumber, email, address);
+    public Doctor(String firstName, String lastName, String doctorId,
+                  String specialization, String departmentId,
+                  double consultationFee, boolean isAvailable) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.doctorId = doctorId;
         this.specialization = specialization;
-        this.qualification = qualification;
-        this.experienceYears = experienceYears;
         this.departmentId = departmentId;
         this.consultationFee = consultationFee;
-        this.availableSlots = availableSlots;
-        this.assignedPatients = assignedPatients;
         this.isAvailable = isAvailable;
+    }
+
+
+    public Doctor(boolean isAvailable, String doctorId, String departmentId) {
+        this.isAvailable = isAvailable;
+        this.doctorId = doctorId;
+        this.departmentId = departmentId;
     }
 
     public Doctor(String doctorId, String specialization, String qualification, int experienceYears, String departmentId, double consultationFee, List<String> availableSlots, List<String> assignedPatients, boolean isAvailable) {
@@ -81,8 +90,9 @@ public class Doctor extends PersonBase implements Displayable {
     }
 
     public void setSpecialization(String specialization) {
-        if(!HelperUtils.isValidString(specialization)){
-            System.out.println("Specialization cannot be empty.");
+        while (!HelperUtils.isValidString(specialization)){
+            System.out.println("Specialization cannot be empty");
+            specialization= scanner.nextLine();
             return;
         }
         this.specialization = specialization;
@@ -93,8 +103,10 @@ public class Doctor extends PersonBase implements Displayable {
     }
 
     public void setQualification(String qualification) {
-        if(!HelperUtils.isValidString(qualification)){
+        while (!HelperUtils.isValidString(qualification)){
             System.out.println("Qualification cannot be empty.");
+            qualification= scanner.nextLine();
+
             return;
         }
         this.qualification = qualification;
@@ -107,6 +119,7 @@ public class Doctor extends PersonBase implements Displayable {
     public void setExperienceYears(int experienceYears) {
         if(HelperUtils.isNegative(experienceYears) && experienceYears <= 0){
             System.out.println("Experience years cannot be negative.");
+            experienceYears= scanner.nextInt();
             return;
         }
         this.experienceYears = experienceYears;
@@ -120,6 +133,7 @@ public class Doctor extends PersonBase implements Displayable {
     public void setConsultationFee(double consultationFee) {
         if(HelperUtils.isNegative(consultationFee)){
             System.out.println("Consultation fee cannot be negative.");
+            consultationFee= scanner.nextDouble();
             return;
         }
         this.consultationFee = consultationFee;
