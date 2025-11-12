@@ -226,7 +226,7 @@ public class DepartmentService implements Manageable, Searchable {
 
         Department foundDepartment = null;
         for (Department dept : departmentList) {
-            if (dept.getDepartmentId() != null && dept.getDepartmentId().toString().equals(departmentId)) {
+            if (dept.getDepartmentId() != null && dept.getDepartmentId().equals(departmentId)) {
                 foundDepartment = dept;
                 break;
             }
@@ -334,21 +334,25 @@ public class DepartmentService implements Manageable, Searchable {
     }
 
     public static void addSampleDepartments() {
-        // --- Department 1: Cardiology ---
-        Department dept1 = new Department();
-        dept1.setDepartmentId("DEPT001");
-        dept1.setDepartmentName("Cardiology");
-        dept1.setHeadDoctorId("DR001");
-        dept1.setBedCapacity(50);
-        dept1.setAvailableBeds(10);
-        List<Doctor> cardioDoctors = Arrays.asList(
-                new Doctor(true, "DR001", "DEPT001"),
-                new Doctor(true, "DR002", "DEPT001"));
-        List<Nurse> cardioNurses = Arrays.asList(
-                new Nurse("DEPT001", "NUR001", "Morning"),
-                new Nurse("DEPT001", "NUR002", "Evening"));
-        dept1.setDoctors(cardioDoctors);
-        dept1.setNurses(cardioNurses);
+        for (int i = 0; i <4 ; i++) {
+            Department dept = new Department();
+            dept.setDepartmentId("DEPT001");
+            dept.setDepartmentName("Cardiology");
+            dept.setHeadDoctorId("DR001");
+            dept.setBedCapacity(50);
+            dept.setAvailableBeds(10);
+            List<Doctor> cardioDoctors = Arrays.asList(
+                    new Doctor(true, "DR001", "DEPT001"),
+                    new Doctor(true, "DR002", "DEPT001"));
+            List<Nurse> cardioNurses = Arrays.asList(
+                    new Nurse("DEPT001", "NUR001", "Morning"),
+                    new Nurse("DEPT001", "NUR002", "Evening"));
+            dept.setDoctors(cardioDoctors);
+            dept.setNurses(cardioNurses);
+            departmentList.add(dept);
+        }
+
+
 
         // --- Department 2: Neurology ---
         Department dept2 = new Department();
@@ -367,6 +371,7 @@ public class DepartmentService implements Manageable, Searchable {
                 new Nurse("DEPT002", "NUR004", "Morning"));
         dept2.setDoctors(neuroDoctors);
         dept2.setNurses(neuroNurses);
+        departmentList.add(dept2);
         // --- Department 3: Pediatrics ---
         Department dept3 = new Department();
         dept3.setDepartmentId("DEPT003");
@@ -383,6 +388,8 @@ public class DepartmentService implements Manageable, Searchable {
                 new Nurse("DEPT003", "NUR006", "Morning"));
         dept3.setDoctors(pediDoctors);
         dept3.setNurses(pediNurses);
+        departmentList.add(dept3);
+
     }
 
 }

@@ -188,8 +188,8 @@ public class HospitalManagementApp {
 
                         switch (nurseMenu) {
                             case 1 -> {
-                                Nurse nurse = NurseService.addNurse();
-                                NurseService.save(nurse);
+                                NurseService nurse = new NurseService ();
+                                nurse.add(NurseService.addNurse());
                             }
                             case 2 -> {
                                 NurseService.addSampleNurses();
