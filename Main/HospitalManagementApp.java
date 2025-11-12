@@ -188,22 +188,24 @@ public class HospitalManagementApp {
 
                         switch (nurseMenu) {
                             case 1 -> {
-                                NurseService nurse = new NurseService ();
-                                nurse.add(NurseService.addNurse());
+                                NurseService service = new NurseService ();
+                                Nurse nurse=new Nurse();
+                                service.addNurse();
+
                             }
                             case 2 -> {
                                 NurseService.addSampleNurses();
                                 NurseService.displayAllNurse();
                             }
                             case 3 -> {
-                                Department department = new Department();
                                 System.out.print("Enter department Id: ");
                                 String departmentId = scanner.nextLine();
-                                DepartmentService.viewNursesByDepartment(departmentId);
+                                NurseService.getNursesByDepartment(departmentId);
+
+
                             }
                             case 4 -> {
                                 System.out.print("Enter shift (Morning/Evening/Night): ");
-                                scanner.nextLine(); // Consume newline
                                 String shift = scanner.nextLine();
                                 NurseService.getNursesByShift(shift);
                             }
@@ -617,7 +619,7 @@ public class HospitalManagementApp {
     public static void addSampleDataForAll() {
         PatientService.addSamplePatients();
         DoctorService.addSampleDoctors();
-        NurseService.addSampleNurses();
+        //NurseService.addSampleNurses();
         DepartmentService.addSampleDepartments();
         MedicalRecordService.addSampleMedicalRecord();
         AppointmentService.addSampleAppointments();

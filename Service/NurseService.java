@@ -1,5 +1,6 @@
 package Service;
 
+import Entity.Department;
 import Entity.Nurse;
 import Interface.Manageable;
 import Interface.Searchable;
@@ -10,34 +11,34 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class NurseService implements Manageable, Searchable {
-   public static List <Nurse> ListOfNurse =new ArrayList<>() ;
+    public static List<Nurse> ListOfNurse = new ArrayList<>();
 
 
-public static Nurse assignPatientToNurse(String nurseId, String patientName) {
-    for (Nurse n : ListOfNurse) {
-        if (HelperUtils.isNotNull(n.getNurseId()) && n.getNurseId().toString().equals(nurseId)) {
-            List<String> assigned = n.getAssignedPatients();
-            if (assigned == null) {
-                assigned = new LinkedList<>();
-                n.setAssignedPatients(assigned);
+    public static Nurse assignPatientToNurse(String nurseId, String patientName) {
+        for (Nurse n : ListOfNurse) {
+            if (HelperUtils.isNotNull(n.getNurseId()) && n.getNurseId().toString().equals(nurseId)) {
+                List<String> assigned = n.getAssignedPatients();
+                if (assigned == null) {
+                    assigned = new LinkedList<>();
+                    n.setAssignedPatients(assigned);
+                }
+                assigned.add(patientName);
+                System.out.println("Patient \"" + patientName + "\" assigned to Nurse " + nurseId + " successfully!");
+
             }
-            assigned.add(patientName);
-            System.out.println("Patient \"" + patientName + "\" assigned to Nurse " + nurseId + " successfully!");
+        }
+        System.out.println("Nurse with ID " + nurseId + " not found.");
+        return null;
+    }
 
+    @Override
+    public void add(Object entity) {
+        if (entity instanceof Nurse) {
+            save((Nurse) entity);
+        } else {
+            System.out.println("Invalid entity. Expected Nurse.");
         }
     }
-    System.out.println("Nurse with ID " + nurseId + " not found.");
-    return null;
-}
-
-@Override
-public void add(Object entity) {
-    if (entity instanceof Nurse) {
-        save((Nurse) entity);
-    } else {
-        System.out.println("Invalid entity. Expected Nurse.");
-    }
-}
 
     @Override
     public void remove(String id) {
@@ -45,38 +46,38 @@ public void add(Object entity) {
     }
 
     @Override
-public void getAll() {
-    displayAllNurse();
-}
+    public void getAll() {
+        displayAllNurse();
+    }
 
-@Override
-public void search(String keyword) {
-    boolean found = false;
-    String k = keyword == null ? "" : keyword.toLowerCase();
-    for (Nurse n : ListOfNurse) {
-        if ((n.getFirstName() != null && n.getFirstName().toLowerCase().contains(k)) ||
-            (n.getLastName() != null && n.getLastName().toLowerCase().contains(k))) {
-            n.displayInfo();
-            found = true;
+    @Override
+    public void search(String keyword) {
+        boolean found = false;
+        String k = keyword == null ? "" : keyword.toLowerCase();
+        for (Nurse n : ListOfNurse) {
+            if ((n.getFirstName() != null && n.getFirstName().toLowerCase().contains(k)) ||
+                    (n.getLastName() != null && n.getLastName().toLowerCase().contains(k))) {
+                n.displayInfo();
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No nurses matched the keyword: " + keyword);
         }
     }
-    if (!found) {
-        System.out.println("No nurses matched the keyword: " + keyword);
-    }
-}
 
-@Override
-public void searchById(String id) {
-    Nurse n = getNurseById(id);
-    if (n != null) {
-        n.displayInfo();
+    @Override
+    public void searchById(String id) {
+        Nurse n = getNurseById(id);
+        if (n != null) {
+            n.displayInfo();
+        }
     }
-}
 
-    public static Nurse addNurse () {
+    public static Nurse addNurse() {
         Nurse nurse = new Nurse();
         System.out.println("Adding Nurse");
-        nurse.setId(HelperUtils.generateId("NUR",5));
+        nurse.setId(HelperUtils.generateId("NUR", 5));
 
         nurse.setFirstName(InputHelper.getStringInput("Enter the FirstName"));
         nurse.setLastName(InputHelper.getStringInput("Enter the lastName"));
@@ -86,11 +87,11 @@ public void searchById(String id) {
         nurse.setEmail(InputHelper.getStringInput("Enter email "));
         nurse.setAddress(InputHelper.getStringInput("Enter address"));
         int shiftChoice = InputHelper.getIntInput("""
-        Enter shift (number only):
-        1. Morning
-        2. Evening
-        3. Night
-        """);
+                Enter shift (number only):
+                1. Morning
+                2. Evening
+                3. Night
+                """);
         String shift = switch (shiftChoice) {
             case 1 -> "Morning";
             case 2 -> "Evening";
@@ -100,8 +101,8 @@ public void searchById(String id) {
         nurse.setShift(shift);
         System.out.println();
         nurse.setQualification(InputHelper.getStringInput(" Enter qualification"));
-        nurse.setNurseId(HelperUtils.generateId("NUR",5));
-        nurse.setDepartmentId(HelperUtils.generateId("DEP",6));
+        nurse.setNurseId(HelperUtils.generateId("NUR", 5));
+        nurse.setDepartmentId(HelperUtils.generateId("DEP", 6));
 
         //  ---------- assignedPatients ----------
         boolean Input = true;
@@ -110,7 +111,7 @@ public void searchById(String id) {
 
         while (Input) {
 
-            String record = InputHelper.getStringInput("Enter assigned Patients #" + assignedNumber  );
+            String record = InputHelper.getStringInput("Enter assigned Patients #" + assignedNumber);
             assignedInput.add(record);
             assignedNumber++;
 
@@ -120,8 +121,7 @@ public void searchById(String id) {
             }
         }
         nurse.setAssignedPatients(assignedInput);
-
-
+        ListOfNurse.add(nurse);
         return nurse;
     }
 
@@ -129,6 +129,7 @@ public void searchById(String id) {
         ListOfNurse.add(nurse);
         System.out.println("Nurse added successfully!\n");
     }
+
     public static boolean editNurse(String nurseId, Nurse updatedNurse) {
         for (int i = 0; i < ListOfNurse.size(); i++) {
             Nurse existingNurse = ListOfNurse.get(i);
@@ -147,6 +148,7 @@ public void searchById(String id) {
         System.out.println("Nurse with ID " + nurseId + " not found.");
         return false;
     }
+
     public static boolean removeNurse(String NurseId) {
         for (int i = 0; i < ListOfNurse.size(); i++) {
             Nurse D = ListOfNurse.get(i);
@@ -171,21 +173,31 @@ public void searchById(String id) {
         return null;
     }
 
-    public static void getNursesByDepartment(String Department) {
-        boolean found = false;
+    public static void getNursesByDepartment(String departmentId) {
+        if (ListOfNurse == null || ListOfNurse.isEmpty()) {
+            System.out.println(" No nurses available in the system.");
+            return;
+        }
 
-        for (Nurse d : ListOfNurse) {
-            if (d.getDepartmentId() != null &&
-                    d.getDepartmentId().equals(Department.toLowerCase())) {
-                d.displayInfo();
+        boolean found = false;
+        System.out.println("\n===== Nurses in Department: " + departmentId + " =====");
+
+        for (Nurse nurse : ListOfNurse) {
+            if (nurse.getDepartmentId() != null &&
+                    nurse.getDepartmentId().trim().equalsIgnoreCase(departmentId.trim())) {
+
+                nurse.displayInfo();
                 found = true;
             }
         }
 
         if (!found) {
-            System.out.println("No Nurse found with Entity.Department: " + Department);
+            System.out.println(" No nurses found in department: " + departmentId);
         }
+
+        System.out.println("==========================================\n");
     }
+
 
 
     public static void displayAllNurse() {
@@ -198,6 +210,7 @@ public void searchById(String id) {
             p.displayInfo();
         }
     }
+
     public static void getNursesByShift(String shift) {
         boolean found = false;
 
@@ -212,7 +225,8 @@ public void searchById(String id) {
             System.out.println("No nurses found in the " + shift + " shift.");
         }
     }
-    public static void  addSampleNurses() {
+
+    public static void addSampleNurses() {
         for (int i = 0; i < 6; i++) {
             Nurse nurse = new Nurse();
             nurse.setNurseId(HelperUtils.generateId("NUR", 5));
@@ -234,7 +248,9 @@ public void searchById(String id) {
 
         }
     }
-
-
-
 }
+
+
+
+
+
