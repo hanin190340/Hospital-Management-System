@@ -114,8 +114,7 @@ public class Department implements Displayable {
             System.out.println(" - No doctors assigned");
         } else {
             for (Doctor doctor : doctors) {
-                System.out.println(" -Doctor ID: " + doctor.getDoctorId() +
-                        ", Specialization: " + doctor.getSpecialization());
+                System.out.println(" -Doctor ID: " + doctor.getDoctorId() );
             }
         }
 

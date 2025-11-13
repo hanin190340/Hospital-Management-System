@@ -2,6 +2,7 @@ package Entity;
 
 import Interface.Displayable;
 import Utils.HelperUtils;
+import Utils.InputHelper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -77,14 +78,45 @@ public class Appointment implements Displayable {
         return appointmentTime;
     }
 
-    public void setAppointmentTime(String appointmentTime) {
-        while (!HelperUtils.isValidDate(appointmentTime)) {
-            System.out.println(" is not valid time ");
-            appointmentTime = scanner.nextLine();
 
+    public void setAppointmentTime() {
+        boolean valid = false;
+        String inputTime;
+        while (!valid) {
+            inputTime = InputHelper.getStringInput("Enter Appointment Time (e.g., 10:30 AM): ");
+
+            if (!HelperUtils.isValidString(inputTime)) {
+                System.out.println("Appointment time cannot be null or empty. Please try again.");
+                continue;
+            }
+
+            if (!inputTime.matches("^(0?[1-9]|1[0-2]):[0-5][0-9]\\s?(AM|PM|am|pm)$")) {
+                System.out.println("Invalid time format. Use format like '10:30 AM'.");
+                continue;
+            }
+
+            this.appointmentTime = inputTime;
+            valid = true;
+            System.out.println(" Appointment time set successfully.");
         }
-        this.appointmentTime = appointmentTime;
     }
+    public void setAppointmentTimeForSamples(String appTime) {
+        // Check if the input is null or empty
+        if (appTime == null || appTime.trim().isEmpty()) {
+            throw new IllegalArgumentException("Appointment time cannot be null or empty.");
+        }
+
+        // Validate the format HH:mm (24-hour)
+        if (!appTime.matches("^([01]?\\d|2[0-3]):[0-5]\\d$")) {
+            throw new IllegalArgumentException("Invalid time format! Use 24-hour format like '09:30' or '15:45'.");
+        }
+
+        // If valid, set the appointment time
+        this.appointmentTime = appTime;
+    }
+
+
+
 
     public String getStatus() {
         return status;
@@ -112,12 +144,13 @@ public class Appointment implements Displayable {
     }
 
     public void setReason(String reason) {
-        while (!HelperUtils.isNull(reason) || !HelperUtils.isValidString(reason)) {
-            System.out.println("Reason cannot be null or empty.");
-            reason = scanner.nextLine();
-            return;
+        Scanner scanner = new Scanner(System.in);
 
+        while (HelperUtils.isNull(reason) || !HelperUtils.isValidString(reason)) {
+            System.out.println("Reason cannot be null or empty.");
+            reason = scanner.nextLine().trim();
         }
+
         this.reason = reason;
     }
 
@@ -126,11 +159,13 @@ public class Appointment implements Displayable {
     }
 
     public void setNotes(String notes) {
-        while (!HelperUtils.isNull(notes) || !HelperUtils.isValidString(notes)) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (HelperUtils.isNull(notes) || !HelperUtils.isValidString(notes)) {
             System.out.println("Notes cannot be null or empty.");
-            notes = scanner.nextLine();
-            return;
+            notes = scanner.nextLine().trim();
         }
+
         this.notes = notes;
     }
 

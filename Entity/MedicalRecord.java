@@ -5,9 +5,7 @@ import Utils.HelperUtils;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-import java.util.UUID;
 
-import static Main.HospitalManagementApp.scanner;
 
 public class MedicalRecord implements Displayable {
     Scanner scanner = new Scanner(System.in);

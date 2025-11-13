@@ -1,7 +1,7 @@
 package Service;
 
 import Entity.Appointment;
-import Entity.Doctor;
+
 import Interface.Appointable;
 import Interface.Manageable;
 import Interface.Searchable;
@@ -9,15 +9,11 @@ import Utils.HelperUtils;
 import Utils.InputHelper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
 
 public class AppointmentService implements Manageable, Searchable, Appointable {
     public static List<Appointment> appointmentList = new ArrayList<>();
-    private static LocalDate date;
 
 
     public static boolean completeAppointment(String appointmentId) {
@@ -65,19 +61,19 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
         appointment.setAppointmentId(HelperUtils.generateId("APPT", 5));
         appointment.setPatientId(HelperUtils.generateId("PT", 5));
         appointment.setDoctorId(HelperUtils.generateId("Dr", 5));
-        appointment.setAppointmentTime(InputHelper.getStringInput("Enter appointment Time (HH:MM)"));
+        appointment.setAppointmentTime();
         appointment.setReason(InputHelper.getStringInput("Enter the reason"));
         appointment.setAppointmentDate(InputHelper.getDateInput("Enter appointment Date (YYYY-MM-DD)"));
         System.out.println();
         appointment.setNotes(InputHelper.getStringInput("Enter notes"));
 
         int statusChoice = InputHelper.getIntInput("""
-        Enter status (number only):
-        1. Scheduled
-        2. Cancelled
-        3. Rescheduled
-        4. Completed
-        """);
+                Enter status (number only):
+                1. Scheduled
+                2. Cancelled
+                3. Rescheduled
+                4. Completed
+                """);
 
         String status = switch (statusChoice) {
             case 1 -> "Scheduled";
@@ -88,9 +84,10 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
         };
 
         appointment.setStatus(status);
-        return appointment; }
+        return appointment;
+    }
 
-        public static void save(Appointment appointment) {
+    public static void save(Appointment appointment) {
         if (HelperUtils.isNull(appointment)) {
             System.out.println("Error: Appointment cannot be null");
         }
@@ -105,7 +102,7 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
                     existingAppointment.getAppointmentId().toString().equals(appointmentId)) {
 
                 existingAppointment.setAppointmentDate(newDate);
-                existingAppointment.setAppointmentTime(newTime);
+                existingAppointment.setAppointmentTime();
                 System.out.println("Appointment updated successfully!");
                 return true;
             }
@@ -137,34 +134,42 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
     }
 
     // ========== Search Methods ==========
-    public static Appointment getAppointmentsByDate(LocalDate date) {
+    public static void getAppointmentsByDate(LocalDate date) {
+        boolean found = false;
         for (Appointment p : appointmentList) {
-            if (p.getAppointmentDate() != null && p.getAppointmentDate().equals(date)) {
-                return p;
+            if (HelperUtils.isNotNull(p.getAppointmentDate()) && p.getAppointmentDate().equals(date)) {
+                p.displayInfo();
+                found = true;
             }
         }
-        System.out.println("No appointments found on date: " + date);
-        return null;
-    }
-
-    public static Appointment getAppointmentsByPatient(String patientId) {
-        for (Appointment p : appointmentList) {
-            if (HelperUtils.isNotNull(p.getPatientId()) && p.getPatientId().toString().equals(patientId)) {
-                return p;
-            }
+        if (!found) {
+            System.out.println("No appointments found on date: " + date);
         }
-        System.out.println("Patient with ID " + patientId + " not found.");
-        return null;
     }
 
-    public static Appointment getRecordsByDoctorId(String doctorId) {
+    public static List<Appointment> getAppointmentsByPatient(String patientId) {
+        List<Appointment> result = new ArrayList<>();
+        for (Appointment a : appointmentList) {
+            if (HelperUtils.isNotNull(a.getPatientId()) && a.getPatientId().equals(patientId)) result.add(a);
+        }
+        if (result.isEmpty()) {
+            System.out.println("No appointments found for patient ID: " + patientId);
+        }
+        return result;
+    }
+
+
+    public static void getAppointmentByDoctorId(String doctorId) {
+        boolean found = false;
         for (Appointment p : appointmentList) {
             if (HelperUtils.isNotNull(p.getDoctorId()) && p.getDoctorId().toString().equals(doctorId)) {
-                return p;
+                p.displayInfo();
+                found = true;
             }
         }
-        System.out.println("Doctor with ID " + doctorId + " not found.");
-        return null;
+        if (!found) {
+            System.out.println("Doctor with ID " + doctorId + " not found.");
+        }
     }
 
     // ========== Display ==========
@@ -199,7 +204,7 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
         appointment.setPatientId(HelperUtils.generateId("PAT", 5));
         appointment.setDoctorId(HelperUtils.generateId("Dr", 5));
         appointment.setAppointmentDate(date);
-        appointment.setAppointmentTime(time);
+        appointment.setAppointmentTime();
         appointmentList.add(appointment);
         System.out.println("Appointment created successfully for " + date + " at " + time);
         return appointment;
@@ -218,7 +223,7 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
     // ========== Overloaded Reschedule ==========
     public static Appointment rescheduleAppointment(String appointmentId, LocalDate newDate) {
         for (Appointment appt : appointmentList) {
-            if (appt.getAppointmentId() != null && appt.getAppointmentId().toString().equals(appointmentId)) {
+            if (HelperUtils.isNotNull(appt.getAppointmentId()) && appt.getAppointmentId().toString().equals(appointmentId)) {
                 appt.setAppointmentDate(newDate);
                 System.out.println("Appointment rescheduled to " + newDate);
                 return appt;
@@ -234,7 +239,7 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
             return null;
         }
         appointment.setAppointmentDate(newDate);
-        appointment.setAppointmentTime(newTime);
+        appointment.setAppointmentTime();
         appointment.setReason(reason);
         System.out.println("Appointment rescheduled to " + newDate + " at " + newTime + ". Reason: " + reason);
         return appointment;
@@ -358,7 +363,7 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
         boolean found = false;
 
         for (Appointment appt : appointmentList) {
-            if (appt.getAppointmentDate() != null && appt.getAppointmentDate().equals(date)) {
+            if (HelperUtils.isNotNull(appt.getAppointmentDate()) && appt.getAppointmentDate().equals(date)) {
                 appt.displayInfo();
                 found = true;
             }
@@ -370,22 +375,59 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
 
         System.out.println("=====================================================\n");
     }
+
+    public static void generateDailyAppointmentsReport(LocalDate date) {
+        if (appointmentList.isEmpty()) {
+            System.out.println("No appointments available.");
+            return;
+        }
+
+        System.out.println("\n===== Daily Appointments Report for " + date + " =====");
+        boolean found = false;
+
+        for (Appointment app : appointmentList) {
+            if (app.getAppointmentDate().equals(date)) {
+                found = true;
+                System.out.println("Appointment ID: " + app.getAppointmentId());
+                System.out.println("Patient ID    : " + app.getPatientId());
+                System.out.println("Doctor ID     : " + app.getDoctorId());
+                System.out.println("Date & Time   : " + app.getAppointmentDate() + " " + app.getAppointmentTime());
+                System.out.println("Status        : " + app.getStatus());
+                System.out.println("Reason        : " + app.getReason());
+                System.out.println("Notes         : " + app.getNotes());
+                System.out.println("-------------------------------");
+            }
+        }
+
+        if (!found) System.out.println("No appointments found for this date.");
+        System.out.println("===== End of Report =====\n");
+    }
+
     public static void addSampleAppointments() {
 
         for (int i = 0; i < 15; i++) {
             Appointment appointment = new Appointment();
 
             appointment.setAppointmentId(HelperUtils.generateId("APP", 5));
-            appointment.setPatientId(HelperUtils.generateId("PT" , 5));
-            appointment.setDoctorId(HelperUtils.generateId("Dr ",5 ));
+            appointment.setPatientId(HelperUtils.generateId("PT", 5));
+            appointment.setDoctorId(HelperUtils.generateId("Dr ", 5));
             appointment.setAppointmentDate(LocalDate.now().plusDays(i));
-            appointment.setAppointmentTime((9 + (i % 8)) + ":00 AM"); // 9 AM to 4 PM range
+            String sampleTime = String.format("%02d:00", 9 + (i % 8));
+            appointment.setAppointmentTimeForSamples(sampleTime);
             String status;
             switch (i % 4) {
-                case 0:  status = "Scheduled"; break;
-                case 1:  status = "Completed"; break;
-                case 2:  status = "Cancelled"; break;
-                default: status = "Rescheduled"; break;
+                case 0:
+                    status = "Scheduled";
+                    break;
+                case 1:
+                    status = "Completed";
+                    break;
+                case 2:
+                    status = "Cancelled";
+                    break;
+                default:
+                    status = "Rescheduled";
+                    break;
             }
             appointment.setStatus(status);
 
@@ -395,7 +437,9 @@ public class AppointmentService implements Manageable, Searchable, Appointable {
             appointmentList.add(appointment);
 
         }
+
     }
+
 
 }
 

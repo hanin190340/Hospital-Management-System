@@ -1,6 +1,5 @@
 package Service;
 
-import Entity.Appointment;
 import Entity.Department;
 import Entity.Doctor;
 import Entity.Nurse;
@@ -63,33 +62,68 @@ public class DepartmentService implements Manageable, Searchable {
         System.out.println(" Department with ID " + departmentId + " not found.");
     }
 
-    public static boolean editDepartment(String departmentId, Department updatedDepartment) {
-        for (int i = 0; i < departmentList.size(); i++) {
-            Department existing = departmentList.get(i);
+    public static void editDepartment(String departmentId) {
+        Department foundDepartment = null;
 
-            if (existing.getDepartmentId() != null && existing.getDepartmentId().equals(departmentId)) {
-                updatedDepartment.setDepartmentId(existing.getDepartmentId());
-                departmentList.set(i, updatedDepartment);
-                System.out.println(" Department updated successfully!");
-                return true;
-            }
-        }
-
-        System.out.println(" Department with ID " + departmentId + " not found.");
-        return false;
-    }
-
-
-    public static boolean removeDepartment(String departmentId) {
         for (Department dept : departmentList) {
-            if (dept.getDepartmentId().equals(departmentId)) {
-                departmentList.remove(dept);
-                System.out.println("Department with ID " + departmentId + " removed successfully!");
-                return true;
+            if (dept.getDepartmentId().equalsIgnoreCase(departmentId)) {
+                foundDepartment = dept;
+                break;
             }
         }
-        System.out.println("Department with ID " + departmentId + " not found.");
-        return false;
+
+        if (foundDepartment == null) {
+            System.out.println(" Department with ID " + departmentId + " not found.");
+            return;
+        }
+
+        System.out.println("\n=== Edit Department: " + foundDepartment.getDepartmentName() + " ===");
+        boolean editing = true;
+
+        while (editing) {
+            System.out.println("""
+                    Choose what to edit:
+                    1 - Department Name
+                    2 - Head Doctor ID
+                    3 - Bed Capacity
+                    4 - Available Beds
+                    5 - Exit Editing
+                    """);
+
+            int choice = InputHelper.getIntInput("Enter your choice ");
+
+            switch (choice) {
+                case 1 -> {
+                    String newName = InputHelper.getStringInput("Enter new Department Name ");
+                    foundDepartment.setDepartmentName(newName);
+                    System.out.println(" Department name updated successfully.");
+                }
+                case 2 -> {
+                    String newHeadDoctorId = InputHelper.getStringInput("Enter new Head Doctor ID");
+                    foundDepartment.setHeadDoctorId(newHeadDoctorId);
+                    System.out.println(" Head Doctor ID updated successfully.");
+                }
+                case 3 -> {
+                    int newCapacity = InputHelper.getIntInput("Enter new Bed Capacity");
+                    foundDepartment.setBedCapacity(newCapacity);
+                    System.out.println(" Bed capacity updated successfully.");
+                }
+                case 4 -> {
+                    int newAvailable = InputHelper.getIntInput("Enter new Available Beds ");
+                    if (newAvailable > foundDepartment.getBedCapacity()) {
+                        System.out.println(" Available beds cannot exceed total bed capacity!");
+                    } else {
+                        foundDepartment.setAvailableBeds(newAvailable);
+                        System.out.println("Available beds updated successfully.");
+                    }
+                }
+                case 5 -> {
+                    editing = false;
+                    System.out.println("Exiting department editing...");
+                }
+                default -> System.out.println(" Invalid option. Please try again.");
+            }
+        }
     }
 
 
@@ -142,10 +176,8 @@ public class DepartmentService implements Manageable, Searchable {
     }
 
     public static void assignNurseToDepartment(String nurseId, String departmentId) {
-
-        // Find the nurse from NurseService
         Entity.Nurse foundNurse = null;
-        for (Entity.Nurse nurse : NurseService.ListOfNurse) {   // assuming NurseService has a static List<Nurse> nurseList
+        for (Entity.Nurse nurse : NurseService.ListOfNurse) {
             if (nurse.getNurseId().toString().equals(nurseId)) {
                 foundNurse = nurse;
                 break;
@@ -169,7 +201,6 @@ public class DepartmentService implements Manageable, Searchable {
             return;
         }
 
-        // Add nurse to department’s nurse list
         if (foundDepartment.getNurses() == null) {
             foundDepartment.setNurses(new ArrayList<>());
         }
@@ -187,7 +218,7 @@ public class DepartmentService implements Manageable, Searchable {
 
         Department found = null;
         for (Department dept : departmentList) {
-            if (dept.getDepartmentId() != null && dept.getDepartmentId().toString().equals(departmentId)) {
+            if (HelperUtils.isNotNull(dept.getDepartmentId() ) && dept.getDepartmentId().toString().equals(departmentId)) {
                 found = dept;
                 break;
             }
@@ -226,19 +257,19 @@ public class DepartmentService implements Manageable, Searchable {
 
         Department foundDepartment = null;
         for (Department dept : departmentList) {
-            if (dept.getDepartmentId() != null && dept.getDepartmentId().equals(departmentId)) {
+            if (HelperUtils.isNotNull(dept.getDepartmentId())  && dept.getDepartmentId().equals(departmentId)) {
                 foundDepartment = dept;
                 break;
             }
         }
 
-        if (foundDepartment == null) {
+        if (HelperUtils.isNull(foundDepartment)) {
             System.out.println("Department with ID " + departmentId + " not found.");
             return;
         }
 
         List<Nurse> nurses = NurseService.ListOfNurse;
-        if (nurses == null || nurses.isEmpty()) {
+        if (HelperUtils.isNull(nurses)  || nurses.isEmpty()) {
             System.out.println("No nurses assigned to Department " + foundDepartment.getDepartmentName() + ".");
             return;
         }
@@ -252,29 +283,40 @@ public class DepartmentService implements Manageable, Searchable {
     }
 
     //  Generate Department Occupancy Report
-    public static void generateDepartmentOccupancyReport() {
+    public static void generateDepartmentOccupancyReport(String departmentId) {
         if (departmentList.isEmpty()) {
-            System.out.println(" No departments available to generate report.");
+            System.out.println("No departments available to generate report.");
+            return;
+        }
+
+        Department foundDept = null;
+        for (Department dept : departmentList) {
+            if (HelperUtils.isNotNull(dept.getDepartmentId()) && dept.getDepartmentId().equals(departmentId)) {
+                foundDept = dept;
+                break;
+            }
+        }
+
+        if (foundDept == null) {
+            System.out.println("Department with ID " + departmentId + " not found.");
             return;
         }
 
         System.out.println("\n===== Department Occupancy Report =====");
+        String deptId = foundDept.getDepartmentId();
+        String deptName = foundDept.getDepartmentName();
+        int totalBeds = foundDept.getBedCapacity();
+        int availableBeds = foundDept.getAvailableBeds();
+        int occupiedBeds = totalBeds - availableBeds;
+        double occupancyRate = (totalBeds > 0) ? ((double) occupiedBeds / totalBeds) * 100 : 0;
 
-        for (Department dept : departmentList) {
-            String deptName = dept.getDepartmentName();
-            int totalBeds = dept.getBedCapacity();
-            int availableBeds = dept.getAvailableBeds();
-            int occupiedBeds = totalBeds - availableBeds;
-            double occupancyRate = (totalBeds > 0) ? ((double) occupiedBeds / totalBeds) * 100 : 0;
-
-            System.out.println("Department Name     : " + deptName);
-            System.out.println("Total Beds          : " + totalBeds);
-            System.out.println("Available Beds      : " + availableBeds);
-            System.out.println("Occupied Beds       : " + occupiedBeds);
-            System.out.printf("Occupancy Rate      : %.2f%%\n", occupancyRate);
-            System.out.println("-----------------------------------");
-        }
-
+        System.out.println("Department ID       : " + deptId);
+        System.out.println("Department Name     : " + deptName);
+        System.out.println("Total Beds          : " + totalBeds);
+        System.out.println("Available Beds      : " + availableBeds);
+        System.out.println("Occupied Beds       : " + occupiedBeds);
+        System.out.printf("Occupancy Rate      : %.2f%%\n", occupancyRate);
+        System.out.println("-----------------------------------");
         System.out.println("===== End of Report =====\n");
     }
 
@@ -304,7 +346,7 @@ public class DepartmentService implements Manageable, Searchable {
         boolean found = false;
         String k = keyword == null ? "" : keyword.toLowerCase();
         for (Department d : departmentList) {
-            if ((d.getDepartmentName() != null && d.getDepartmentName().toLowerCase().contains(k))) {
+            if ((HelperUtils.isNotNull(d.getDepartmentName()) && d.getDepartmentName().toLowerCase().contains(k))) {
                 d.displayInfo();
                 found = true;
             }
@@ -342,26 +384,14 @@ public class DepartmentService implements Manageable, Searchable {
             dept.setHeadDoctorId(HelperUtils.generateId("DR", 5));
             dept.setBedCapacity(50);
             dept.setAvailableBeds(10);
-
-            // Doctors assigned to this department
-            List<Doctor> doctors = Arrays.asList(
-                    new Doctor(true, "DR00" + (i + 1), deptId),
-                    new Doctor(true, "DR00" + (i + 2), deptId)
-            );
-
-            List<Nurse> nurses = Arrays.asList(
-                    new Nurse(deptId, "NUR00" + (i + 1), "Morning"),
-                    new Nurse(deptId, "NUR00" + (i + 2), "Evening")
-            );
-
-            dept.setDoctors(doctors);
-            dept.setNurses(nurses);
+            dept.setDoctors(new ArrayList<>());
+            dept.setNurses(new ArrayList<>());
 
             departmentList.add(dept);
         }
 
     }
-    
+
 }
 
 

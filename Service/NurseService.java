@@ -1,6 +1,5 @@
 package Service;
 
-import Entity.Department;
 import Entity.Nurse;
 import Interface.Manageable;
 import Interface.Searchable;
@@ -16,20 +15,26 @@ public class NurseService implements Manageable, Searchable {
 
     public static Nurse assignPatientToNurse(String nurseId, String patientName) {
         for (Nurse n : ListOfNurse) {
-            if (HelperUtils.isNotNull(n.getNurseId()) && n.getNurseId().toString().equals(nurseId)) {
+            if (HelperUtils.isNotNull(n.getNurseId()) && n.getNurseId().equals(nurseId)) {
                 List<String> assigned = n.getAssignedPatients();
                 if (assigned == null) {
-                    assigned = new LinkedList<>();
-                    n.setAssignedPatients(assigned);
+                    assigned = new ArrayList<>();
+                } else {
+                    assigned = new ArrayList<>(assigned);
                 }
-                assigned.add(patientName);
-                System.out.println("Patient \"" + patientName + "\" assigned to Nurse " + nurseId + " successfully!");
 
+                assigned.add(patientName);
+                n.setAssignedPatients(assigned);
+
+                System.out.println(" Patient \"" + patientName + "\" assigned to Nurse " + nurseId + " successfully!");
+                return n;
             }
         }
-        System.out.println("Nurse with ID " + nurseId + " not found.");
+
+        System.out.println(" Nurse with ID " + nurseId + " not found.");
         return null;
     }
+
 
     @Override
     public void add(Object entity) {
@@ -81,7 +86,7 @@ public class NurseService implements Manageable, Searchable {
 
         nurse.setFirstName(InputHelper.getStringInput("Enter the FirstName"));
         nurse.setLastName(InputHelper.getStringInput("Enter the lastName"));
-        nurse.setDateOfBirth(InputHelper.getDateInput("Enter date of birth (YYYY-MM-DD)"));
+        nurse.setDateOfBirth(InputHelper.getDateInput("Enter date of birth "));
         nurse.setGender(InputHelper.getStringInput("Enter gender (M/F) "));
         nurse.setPhoneNumber(InputHelper.getStringInput("Enter phoneNumber "));
         nurse.setEmail(InputHelper.getStringInput("Enter email "));
@@ -130,30 +135,101 @@ public class NurseService implements Manageable, Searchable {
         System.out.println("Nurse added successfully!\n");
     }
 
-    public static boolean editNurse(String nurseId, Nurse updatedNurse) {
-        for (int i = 0; i < ListOfNurse.size(); i++) {
-            Nurse existingNurse = ListOfNurse.get(i);
+    public static void editNurseByMenu(String nurseId) {
+        Nurse nurseToEdit = null;
 
-            if (existingNurse.getNurseId() != null && existingNurse.getNurseId().equals(nurseId)) {
-
-                updatedNurse.setNurseId(existingNurse.getNurseId());
-
-                // Replace old Entity.Nurse with updated one
-                ListOfNurse.set(i, updatedNurse);
-                System.out.println("Nurse updated successfully!");
-                return true;
+        for (Nurse n : ListOfNurse) {
+            if (HelperUtils.isNotNull(n.getNurseId()) && n.getNurseId().equalsIgnoreCase(nurseId)) {
+                nurseToEdit = n;
+                break;
             }
         }
 
-        System.out.println("Nurse with ID " + nurseId + " not found.");
-        return false;
+        if (nurseToEdit == null) {
+            System.out.println(" Nurse with ID " + nurseId + " not found.");
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        int choice = 0;
+
+        do {
+            System.out.println("""
+                ===== Edit Nurse Information =====
+                1 - Change First Name
+                2 - Change Last Name
+                3 - Change Phone Number
+                4 - Change Email
+                5 - Change Address
+                6 - Change Shift
+                7 - Change Qualification
+                8 - Exit
+                ==================================
+                """);
+
+            System.out.print("Enter your choice: ");
+            choice = InputHelper.getIntInput("");
+
+            switch (choice) {
+                case 1 -> {
+                    String newFirstName = InputHelper.getStringInput("Enter new First Name ");
+                    nurseToEdit.setFirstName(newFirstName);
+                    System.out.println(" First name updated successfully.");
+                }
+                case 2 -> {
+                    String newLastName = InputHelper.getStringInput("Enter new Last Name ");
+                    nurseToEdit.setLastName(newLastName);
+                    System.out.println(" Last name updated successfully.");
+                }
+                case 3 -> {
+                    String newPhone = InputHelper.getStringInput("Enter new Phone Number ");
+                    nurseToEdit.setPhoneNumber(newPhone);
+                    System.out.println("Phone number updated successfully.");
+                }
+                case 4 -> {
+                    String newEmail = InputHelper.getStringInput("Enter new Email ");
+                    nurseToEdit.setEmail(newEmail);
+                    System.out.println("Email updated successfully.");
+                }
+                case 5 -> {
+                    String newAddress = InputHelper.getStringInput("Enter new Address ");
+                    nurseToEdit.setAddress(newAddress);
+                    System.out.println(" Address updated successfully.");
+                }
+                case 6 -> {
+                    int shiftChoice = InputHelper.getIntInput("""
+                        Choose new Shift:
+                        1 - Morning
+                        2 - Evening
+                        3 - Night
+                        """);
+                    String newShift = switch (shiftChoice) {
+                        case 1 -> "Morning";
+                        case 2 -> "Evening";
+                        case 3 -> "Night";
+                        default -> "Unknown";
+                    };
+                    nurseToEdit.setShift(newShift);
+                    System.out.println("Shift updated successfully.");
+                }
+                case 7 -> {
+                    String newQualification = InputHelper.getStringInput("Enter new Qualification ");
+                    nurseToEdit.setQualification(newQualification);
+                    System.out.println(" Qualification updated successfully.");
+                }
+                case 8 -> System.out.println("Exiting edit menu...");
+                default -> System.out.println(" Invalid choice, please try again.");
+            }
+
+        } while (choice != 8);
     }
+
 
     public static boolean removeNurse(String NurseId) {
         for (int i = 0; i < ListOfNurse.size(); i++) {
             Nurse D = ListOfNurse.get(i);
 
-            if (D.getNurseId() != null && D.getNurseId().equals(NurseId)) {
+            if (HelperUtils.isNotNull(D.getNurseId())  && D.getNurseId().equals(NurseId)) {
                 ListOfNurse.remove(i); // remove by index
                 System.out.println("Nurse with ID " + NurseId + " removed successfully!");
                 return true;
@@ -165,7 +241,7 @@ public class NurseService implements Manageable, Searchable {
 
     public static Nurse getNurseById(String nurseId) {
         for (Nurse D : ListOfNurse) {
-            if (D.getNurseId() != null && D.getNurseId().equals(nurseId)) {
+            if (HelperUtils.isNotNull(D.getNurseId())  && D.getNurseId().equals(nurseId)) {
                 return D;
             }
         }
@@ -183,7 +259,7 @@ public class NurseService implements Manageable, Searchable {
         System.out.println("\n===== Nurses in Department: " + departmentId + " =====");
 
         for (Nurse nurse : ListOfNurse) {
-            if (nurse.getDepartmentId() != null &&
+            if (HelperUtils.isNotNull(nurse.getDepartmentId()) &&
                     nurse.getDepartmentId().trim().equalsIgnoreCase(departmentId.trim())) {
 
                 nurse.displayInfo();

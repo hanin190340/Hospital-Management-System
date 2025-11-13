@@ -3,13 +3,17 @@ package Utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class HelperUtils {
+
 
 
     // --- Existing Methods ---
@@ -199,8 +203,20 @@ public class HelperUtils {
             return pattern.matcher(email).matches();
         }
 
-
+    public static boolean isValidTime(String time) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            LocalTime.parse(time, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
+
+
+}
+
+
 
 
 

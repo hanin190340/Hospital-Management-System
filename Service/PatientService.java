@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static Service.AppointmentService.appointmentList;
+
 public class PatientService implements Manageable, Searchable {
     public static List<Patient> listPatient = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class PatientService implements Manageable, Searchable {
 
         while (continueMedicalInput) {
 
-            String record = InputHelper.getStringInput("Enter medical record #" + medicalRecordNumber + ":");
+            String record = InputHelper.getStringInput("Enter medical record #" + medicalRecordNumber );
             medicalRecordsInput.add(record);
             medicalRecordNumber++;
 
@@ -98,7 +100,7 @@ public class PatientService implements Manageable, Searchable {
         for (int i = 0; i < listPatient.size(); i++) {
             Patient existingPatient = listPatient.get(i);
 
-            if (existingPatient.getPatientId() != null && existingPatient.getPatientId().toString().equals(patientId)) {
+            if (HelperUtils.isNotNull(existingPatient.getPatientId() ) && existingPatient.getPatientId().toString().equals(patientId)) {
 
                 updatedPatient.setPatientId(existingPatient.getPatientId());
 
@@ -127,9 +129,9 @@ public class PatientService implements Manageable, Searchable {
     public static void searchPatientsByName(String name) {
         boolean found = false;
         for (Patient p : listPatient) {
-            if ((p.getFirstName() != null && p.getFirstName().toLowerCase().contains(name.toLowerCase())) ||
-                    (p.getLastName() != null && p.getLastName().toLowerCase().contains(name.toLowerCase()))) {
-                p.displayInfo();  // display matching patient
+            if ((HelperUtils.isNotNull(p.getFirstName()) && p.getFirstName().toLowerCase().contains(name.toLowerCase())) ||
+                    (HelperUtils.isNotNull(p.getLastName())  && p.getLastName().toLowerCase().contains(name.toLowerCase()))) {
+                p.displayInfo();
                 found = true;
             }
         }
@@ -171,9 +173,8 @@ public class PatientService implements Manageable, Searchable {
     public static Patient searchPatients(String keyword) {
         for (Patient p : listPatient) {
             if ((HelperUtils.isNotNull(p.getPatientId()) && p.getPatientId().toString().equals(keyword)) ||
-                    (
-                            p.getFirstName() != null && p.getFirstName().equalsIgnoreCase(keyword)) ||
-                    (p.getLastName() != null && p.getLastName().equalsIgnoreCase(keyword))) {
+                    (HelperUtils.isNotNull(p.getFirstName() )  && p.getFirstName().equalsIgnoreCase(keyword)) ||
+                    (HelperUtils.isNotNull(p.getLastName())  && p.getLastName().equalsIgnoreCase(keyword))) {
                 return p;
             }
         }
@@ -183,8 +184,8 @@ public class PatientService implements Manageable, Searchable {
 
     public Patient searchPatients(String firstName, String lastName) {
         for (Patient p : PatientService.listPatient) {
-            if (p.getFirstName() != null && p.getFirstName().equalsIgnoreCase(firstName) &&
-                    p.getLastName() != null && p.getLastName().equalsIgnoreCase(lastName)) {
+            if (HelperUtils.isNotNull(p.getFirstName())  && p.getFirstName().equalsIgnoreCase(firstName) &&
+                    HelperUtils.isNotNull( p.getLastName() ) && p.getLastName().equalsIgnoreCase(lastName)) {
                 return p;
             }
         }
@@ -405,6 +406,21 @@ public class PatientService implements Manageable, Searchable {
         }
     }
 
+    public static List<Appointment> getAppointmentsByPatient(String patientId) {
+        List<Appointment> result = new ArrayList<>();
+        for (Appointment a : appointmentList) {
+            if (HelperUtils.isNotNull(a.getPatientId()) && a.getPatientId().equals(patientId)) result.add(a);
+        }
+        if (result.isEmpty()) {
+            System.out.println("No appointments found for patient ID: " + patientId);
+        }
+        return result;
+    }
+
+    public static List<Patient> getAllPatients() {
+        return new ArrayList<>(listPatient);
+    }
+
     public static void editPatient(String patientId) {
         for (Patient patient : listPatient) {
             if (patient.getPatientId() != null && patient.getPatientId().equals(patientId)) {
@@ -431,24 +447,24 @@ public class PatientService implements Manageable, Searchable {
                     int choice = InputHelper.getIntInput("Enter your choice: ");
 
                     switch (choice) {
-                        case 1 -> patient.setFirstName(InputHelper.getStringInput("Enter new first name: "));
-                        case 2 -> patient.setLastName(InputHelper.getStringInput("Enter new last name: "));
+                        case 1 -> patient.setFirstName(InputHelper.getStringInput("Enter new first name "));
+                        case 2 -> patient.setLastName(InputHelper.getStringInput("Enter new last name "));
                         case 3 ->
-                                patient.setDateOfBirth(InputHelper.getDateInput("Enter new date of birth (yyyy-MM-dd): "));
-                        case 4 -> patient.setGender(InputHelper.getStringInput("Enter new gender (M/F): "));
-                        case 5 -> patient.setPhoneNumber(InputHelper.getStringInput("Enter new phone number: "));
-                        case 6 -> patient.setEmail(InputHelper.getStringInput("Enter new email: "));
-                        case 7 -> patient.setAddress(InputHelper.getStringInput("Enter new address: "));
-                        case 8 -> patient.setBloodGroup(InputHelper.getStringInput("Enter new blood group: "));
+                                patient.setDateOfBirth(InputHelper.getDateInput("Enter new date of birth  "));
+                        case 4 -> patient.setGender(InputHelper.getStringInput("Enter new gender (M/F)"));
+                        case 5 -> patient.setPhoneNumber(InputHelper.getStringInput("Enter new phone number "));
+                        case 6 -> patient.setEmail(InputHelper.getStringInput("Enter new email "));
+                        case 7 -> patient.setAddress(InputHelper.getStringInput("Enter new address "));
+                        case 8 -> patient.setBloodGroup(InputHelper.getStringInput("Enter new blood group"));
                         case 9 ->
-                                patient.setEmergencyContact(InputHelper.getStringInput("Enter new emergency contact: "));
+                                patient.setEmergencyContact(InputHelper.getStringInput("Enter new emergency contact"));
                         case 10 -> {
                             List<String> allergies = new ArrayList<>();
                             boolean addMore = true;
                             while (addMore) {
-                                String allergy = InputHelper.getStringInput("Enter allergy: ");
+                                String allergy = InputHelper.getStringInput("Enter allergy ");
                                 allergies.add(allergy);
-                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more: ");
+                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more ");
                                 if (exitFlag.equalsIgnoreCase("q")) addMore = false;
                             }
                             patient.setAllergies(allergies);
@@ -457,9 +473,9 @@ public class PatientService implements Manageable, Searchable {
                             List<String> records = new ArrayList<>();
                             boolean addMore = true;
                             while (addMore) {
-                                String record = InputHelper.getStringInput("Enter medical record: ");
+                                String record = InputHelper.getStringInput("Enter medical record ");
                                 records.add(record);
-                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more: ");
+                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more ");
                                 if (exitFlag.equalsIgnoreCase("q")) addMore = false;
                             }
                             patient.setMedicalRecords(records);
@@ -468,9 +484,9 @@ public class PatientService implements Manageable, Searchable {
                             List<String> appointments = new ArrayList<>();
                             boolean addMore = true;
                             while (addMore) {
-                                String appt = InputHelper.getStringInput("Enter appointment: ");
+                                String appt = InputHelper.getStringInput("Enter appointment");
                                 appointments.add(appt);
-                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more: ");
+                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more ");
                                 if (exitFlag.equalsIgnoreCase("q")) addMore = false;
                             }
                             patient.setAppointments(appointments);
@@ -492,58 +508,75 @@ public class PatientService implements Manageable, Searchable {
     }
 
 
-    public static void generateDailyPatientStatistics(LocalDate date) {
-        if (listPatient.isEmpty()) {
-            System.out.println(" No patients available.");
+    public static void generatePatientStatisticsReport(String patientId) {
+        Patient patient = PatientService.getPatientById(patientId);
+        if (HelperUtils.isNull(patient)) {
+            System.out.println("Patient with ID " + patientId + " not found.");
             return;
         }
 
-        int count = 0;
-        for (Patient p : listPatient) {
-            if (p.getRegistrationDate() != null && p.getRegistrationDate().equals(date)) {
-                count++;
+        List<Appointment> patientAppointments = AppointmentService.getAppointmentsByPatient(patientId);
+        long totalAppointments = patientAppointments.size();
+
+        long completedAppointments = 0;
+        long cancelledAppointments = 0;
+
+        for (Appointment appointment : patientAppointments) {
+            String status = appointment.getStatus();
+            if (status.equalsIgnoreCase("Completed")) {
+                completedAppointments++;
+            } else if (status.equalsIgnoreCase("Cancelled")) {
+                cancelledAppointments++;
             }
         }
 
-        System.out.println("\n===== Daily Patient Statistics =====");
-        System.out.println("Date              : " + date);
-        System.out.println("Number of Patients: " + count);
-        System.out.println("==================================\n");
+        System.out.println("===== Patient Statistics Report =====");
+        System.out.println("Patient Name: " + patient.getFirstName() + " " + patient.getLastName());
+        System.out.println("Total Appointments: " + totalAppointments);
+        System.out.println("Completed Appointments: " + completedAppointments);
+        System.out.println("Cancelled Appointments: " + cancelledAppointments);
+        System.out.println("-------------------------------------------");
     }
 
-    public static void generateEmergencyCasesReport() {
-        if (listPatient.isEmpty()) {
-            System.out.println(" No patients available.");
+    public static void getRecordsByPatientId(String patientId) {
+        Patient foundPatient = null;
+        for (Patient p : listPatient) {
+            if (HelperUtils.isNotNull(p.getPatientId()) && p.getPatientId().equals(patientId)) {
+                foundPatient = p;
+                break;
+            }
+        }
+
+        if (foundPatient == null) {
+            System.out.println("Patient with ID " + patientId + " not found.");
             return;
         }
 
-        int totalEmergencyPatients = 0;
-        List<EmergencyPatient> emergencyPatients = new ArrayList<>();
+        ;
+        System.out.println("Medical Record  " + foundPatient.getMedicalRecords());
 
-        for (Patient p : listPatient) {
-            if (p instanceof EmergencyPatient) {
-                emergencyPatients.add((EmergencyPatient) p);
-                totalEmergencyPatients++;
-            }
-        }
-
-        System.out.println("\n===== Emergency Cases Report =====");
-        System.out.println("Total Emergency Patients: " + totalEmergencyPatients);
-        System.out.println("---------------------------------");
-        if (!emergencyPatients.isEmpty()) {
-            for (EmergencyPatient ep : emergencyPatients) {
-                System.out.println("Patient Name  : " + ep.getFirstName() + " " + ep.getLastName());
-                System.out.println("Emergency Type: " + ep.getEmergencyType());
-                System.out.println("Arrival Mode  : " + ep.getArrivalMode());
-                System.out.println("Triage Level  : " + ep.getTriageLevel());
-                System.out.println("Admitted via ER: " + (ep.isAdmittedViaER() ? "Yes" : "No"));
-                System.out.println("---------------------------------");
-            }
-        } else {
-            System.out.println("No emergency patients recorded.");
-        }
-        System.out.println("=================================\n");
     }
+
+    public static void generateEmergencyCasesReport(String patientId) {
+        System.out.println("===== Emergency Cases Report =====");
+
+        if (HelperUtils.isNull(patientId) || patientId.isEmpty()) {
+            System.out.println("No emergency patients found in the system.");
+            return;
+        }
+
+        List<Patient> ep = PatientService.getAllPatients();
+        for (Patient p : ep) {
+            if (p.getPatientId().equalsIgnoreCase(patientId)) {
+                System.out.println("Patient ID: " + p.getPatientId());
+                System.out.println("Name: " + p.getFirstName() + " " + p.getLastName());
+                System.out.println("Contact: " + p.getPhoneNumber());
+                System.out.println("Address: " + p.getAddress());
+                System.out.println("-------------------------------------------");
+            }
+        }
+    }
+
 
     public static void addSamplePatients() {
         String[] bloodGroups = {"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"};

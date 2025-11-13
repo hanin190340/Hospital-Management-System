@@ -1,7 +1,6 @@
 package Service;
 
-import Entity.Appointment;
-import Entity.Doctor;
+
 import Entity.MedicalRecord;
 import Interface.Manageable;
 import Interface.Searchable;
@@ -9,7 +8,6 @@ import Utils.HelperUtils;
 import Utils.InputHelper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MedicalRecordService implements Manageable, Searchable {
@@ -29,7 +27,7 @@ public class MedicalRecordService implements Manageable, Searchable {
         LocalDate date = InputHelper.getDateInput("Enter visit Date ");
         medicalRecord.setVisitDate(date);
         medicalRecord.setTestResults(InputHelper.getStringInput("Enter test Results"));
-        System.out.println("Enter notes ");
+        medicalRecord.setNotes(InputHelper.getStringInput("Enter notes "));
         return medicalRecord;
     }
 
@@ -73,30 +71,76 @@ public class MedicalRecordService implements Manageable, Searchable {
     }
 
 
-    public static boolean editMedicalRecord(String medicalRecordId, MedicalRecord updatedMedicalRecord) {
-        for (int i = 0; i < medicalRecordList.size(); i++) {
-            MedicalRecord existingRecord = medicalRecordList.get(i);
-
-            if (HelperUtils.isNotNull( existingRecord.getRecordId()) && existingRecord.getRecordId().equals(medicalRecordId)) {
-
-                updatedMedicalRecord.setPatientId(existingRecord.getRecordId());
-
-                // Replace old medicalRecord with updated one
-                medicalRecordList.set(i, updatedMedicalRecord);
-                System.out.println("Medical Record updated successfully!");
-                return true;
+    public static void editMedicalRecord(String medicalRecordId) {
+        MedicalRecord foundRecord = null;
+        for (MedicalRecord record : medicalRecordList) {
+            if (record.getRecordId().equalsIgnoreCase(medicalRecordId)) {
+                foundRecord = record;
+                break;
             }
         }
+        if (foundRecord == null) {
+            System.out.println(" Medical Record with ID " + medicalRecordId + " not found.");
+            return;
+        }
 
-        System.out.println("MedicalRecord with ID " + medicalRecordId + " not found.");
-        return false;
+        boolean editing = true;
+
+        while (editing) {
+            System.out.println("\n=== Edit Medical Record: " + foundRecord.getRecordId() + " ===");
+            System.out.println("""
+                Choose what to edit:
+                1 - Diagnosis
+                2 - Prescription
+                3 - Visit Date
+                4 - Test Results
+                5 - Notes
+                6 - Exit Editing
+                """);
+
+            int choice = InputHelper.getIntInput("Enter your choice ");
+
+            switch (choice) {
+                case 1 -> {
+                    String newDiagnosis = InputHelper.getStringInput("Enter new diagnosis ");
+                    foundRecord.setDiagnosis(newDiagnosis);
+                    System.out.println("Diagnosis updated successfully.");
+                }
+                case 2 -> {
+                    String newPrescription = InputHelper.getStringInput("Enter new prescription ");
+                    foundRecord.setPrescription(newPrescription);
+                    System.out.println("Prescription updated successfully.");
+                }
+                case 3 -> {
+                    LocalDate newDate = InputHelper.getDateInput("Enter new visit date ");
+                    foundRecord.setVisitDate(newDate);
+                    System.out.println(" Visit date updated successfully.");
+                }
+                case 4 -> {
+                    String newTestResults = InputHelper.getStringInput("Enter new test results ");
+                    foundRecord.setTestResults(newTestResults);
+                    System.out.println("Test results updated successfully.");
+                }
+                case 5 -> {
+                    String newNotes = InputHelper.getStringInput("Enter new notes: ");
+                    foundRecord.setNotes(newNotes);
+                    System.out.println("Notes updated successfully.");
+                }
+                case 6 -> {
+                    editing = false;
+                    System.out.println("Exiting medical record editing...");
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
+
 
     public static boolean removeMedicalRecord(String recordId) {
         for (int i = 0; i < medicalRecordList.size(); i++) {
             MedicalRecord p = medicalRecordList.get(i);
             if (HelperUtils.isNotNull(p.getRecordId()) && p.getRecordId().equals(recordId)) {
-                medicalRecordList.remove(i); // remove by index
+                medicalRecordList.remove(i);
                 System.out.println("MedicalRecord with ID " + recordId + " removed successfully!");
                 return true;
             }
@@ -105,26 +149,32 @@ public class MedicalRecordService implements Manageable, Searchable {
         return false;
     }
 
-    public static MedicalRecord getRecordsByPatientId(String patientId) {
+    public static void getRecordsByPatientId(String patientId) {
+        boolean found = false;
+
         for (MedicalRecord p : medicalRecordList) {
-            if (p.getPatientId() != null && p.getPatientId().equals(patientId)) {
-                return p;
+            if (HelperUtils.isNotNull(p.getPatientId()) && p.getPatientId().equals(patientId)) {
+                p.displayInfo();
+                found = true;
             }
         }
-        System.out.println("Patient with ID " + patientId + " not found.");
-        return null;
+
+        if (!found) {
+            System.out.println("Patient with ID " + patientId + " not found.");
+        }
     }
 
-    public static MedicalRecord getRecordsByDoctorId(String doctorId) {
+    public static void getRecordsByDoctorId(String doctorId) {
+        boolean found = false;
         for (MedicalRecord p : medicalRecordList) {
-            if ( HelperUtils.isNotNull(p.getDoctorId())  && p.getDoctorId().equals(doctorId)) {
-                return p;
+            if (HelperUtils.isNotNull(p.getDoctorId()) && p.getDoctorId().equals(doctorId)) {
+                p.displayInfo();
             }
         }
-        System.out.println("Doctor with ID " + doctorId + " not found.");
-        return null;
+        if (!found) {
+            System.out.println("Doctor with ID " + doctorId + " not found.");
+        }
     }
-
     public static void displayPatientHistory(String patientId) {
         if (medicalRecordList.isEmpty()) {
             System.out.println("No patients to display.");
@@ -168,10 +218,10 @@ public class MedicalRecordService implements Manageable, Searchable {
         boolean found = false;
         String k = keyword.toLowerCase();
         for (MedicalRecord b : medicalRecordList) {
-            if ((b.getDiagnosis() != null && b.getDiagnosis().toLowerCase().contains(k)) ||
-                (b.getPrescription() != null && b.getPrescription().toLowerCase().contains(k)) ||
-                (b.getTestResults() != null && b.getTestResults().toLowerCase().contains(k)) ||
-                (b.getNotes() != null && b.getNotes().toLowerCase().contains(k))) {
+            if ((HelperUtils.isNotNull(b.getDiagnosis())  && b.getDiagnosis().toLowerCase().contains(k)) ||
+                (HelperUtils.isNotNull(b.getPrescription())  && b.getPrescription().toLowerCase().contains(k)) ||
+                (HelperUtils.isNotNull(b.getTestResults())  && b.getTestResults().toLowerCase().contains(k)) ||
+                (HelperUtils.isNotNull(b.getNotes())  && b.getNotes().toLowerCase().contains(k))) {
                 b.displayInfo();
                 found = true;
             }
@@ -214,23 +264,25 @@ public class MedicalRecordService implements Manageable, Searchable {
         }
     }
     public static void addSampleMedicalRecord() {
-        List<MedicalRecord> medicalRecords = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
             MedicalRecord medicalRecord = new MedicalRecord();
             medicalRecord.setRecordId(HelperUtils.generateId("MR", 5));
             medicalRecord.setPatientId(HelperUtils.generateId("PT" , 5));
             medicalRecord.setDoctorId(HelperUtils.generateId("DR" ,  5));
             medicalRecord.setVisitDate(LocalDate.now().minusDays(i * 7)); // weekly visits
-            medicalRecord.setDiagnosis("Diagnosis example " + (i + 1));
-            medicalRecord.setPrescription("Prescription example " + (i + 1));
-            medicalRecord.setTestResults("Test results example " + (i + 1));
-            medicalRecord.setNotes("Notes for visit " + (i + 1));
-            medicalRecords.add(medicalRecord);
+            medicalRecord.setDiagnosis("Follow-up check for blood pressure – visit #" + (i + 1));
+            medicalRecord.setTestResults("Blood pressure reading: " + (110 + i) + "/" + (70 + i / 2) + " mmHg. Heart rate normal.");
+            medicalRecord.setPrescription("Continue prescribed medication and maintain low-salt diet.");
+            medicalRecord.setNotes("Patient condition improving steadily. Next visit scheduled after one week.");
+            medicalRecordList.add(medicalRecord);
 
         }
 
+        }
+
+
+
     }
 
-}
 
 

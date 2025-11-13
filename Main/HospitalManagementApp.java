@@ -5,14 +5,9 @@ import Service.*;
 import Utils.InputHelper;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Scanner;
 
-import static Service.DoctorService.addSurgeon;
-import static Service.DoctorService.save;
 
 public class HospitalManagementApp {
-    public static Scanner scanner = new Scanner(System.in);
     public static Integer mainMenu = 0;
     public static Integer doctoMenu = 0;
     public static Integer nurseMenu = 0;
@@ -26,27 +21,26 @@ public class HospitalManagementApp {
         System.out.println("Welcome to Hospital Management System");
         MainMenu();
 
-            addSampleDataForAll();
-        }
+        addSampleDataForAll();
+    }
 
 
-
-        public static void MainMenu() {
+    public static void MainMenu() {
         while (mainMenu != 8) {
             showMainMenu();
-            mainMenu = InputHelper.getIntInput("please enter a valid option",1,8);
+            mainMenu = InputHelper.getIntInput("please enter a valid option", 1, 8);
 
             switch (mainMenu) {
                 case 1 -> {
                     PatientMenu = 0;
                     while (PatientMenu != 10) {
                         showPatientMenu();
-                        PatientMenu = InputHelper.getIntInput("please enter a valid option",1,10);
+                        PatientMenu = InputHelper.getIntInput("please enter a valid option", 1, 10);
 
                         switch (PatientMenu) {
                             case 1 -> {
                                 PatientService patientService = new PatientService();
-                                patientService.add( PatientService.addPatient());
+                                patientService.add(PatientService.addPatient());
                             }
                             case 2 -> {
                                 Patient patient = PatientService.addInPatient();
@@ -54,7 +48,7 @@ public class HospitalManagementApp {
                             }
                             case 3 -> {
                                 Patient patient = PatientService.addOutPatient();
-                                PatientService.save( patient);
+                                PatientService.save(patient);
                             }
                             case 4 -> {
                                 Patient patient = PatientService.addEmergencyPatient();
@@ -62,38 +56,33 @@ public class HospitalManagementApp {
                             }
                             case 5 -> {
                                 PatientService.addSamplePatients();
-                                PatientService service=new PatientService();
+                                PatientService service = new PatientService();
                                 service.getAll();
 
                             }
 
                             case 6 -> {
-                                scanner.nextLine();
-                                System.out.print("Enter Patient ID to search : ");
-                                String patientId = scanner.nextLine();
-                                PatientService service=new PatientService();
+                                String patientId = InputHelper.getStringInput("Enter Patient ID to search ");
+                                PatientService service = new PatientService();
                                 service.searchById(patientId);
                             }
 
-                                case 7 -> {
-                                    System.out.print("Enter Patient ID to update: ");
-                                    String patientId = scanner.nextLine();
-                                    PatientService.editPatient(patientId);
+                            case 7 -> {
+                                String patientId = InputHelper.getStringInput("Enter Patient ID to update");
+                                PatientService.editPatient(patientId);
 
-                                }
+                            }
 
                             case 8 -> {
-                                System.out.print("Enter Patient ID to remove: ");
-                                String patientIdToRemove = scanner.nextLine();
+                                String patientIdToRemove = InputHelper.getStringInput("Enter Patient ID to remove ");
                                 PatientService service = new PatientService();
                                 service.remove(patientIdToRemove);
                             }
 
-                            //case 9 -> {
-                               // System.out.print("Enter Patient ID to view medical history: ");
-                                //String patientIdForHistory = scanner.nextLine();
-                               // MedicalRecordService.getRecordsByPatientId(patientIdForHistory);
-                           // }
+                            case 9 -> {
+                                String patientIdForHistory = InputHelper.getStringInput("Enter Patient ID to view medical history ");
+                                PatientService.getRecordsByPatientId(patientIdForHistory);
+                            }
 
                             case 10 -> {
                                 System.out.println("Exit from menu");
@@ -108,7 +97,7 @@ public class HospitalManagementApp {
                     doctoMenu = 0;
                     while (doctoMenu != 11) {
                         showDoctorMenu();
-                        doctoMenu = InputHelper.getIntInput("please enter a valid option",1,11);
+                        doctoMenu = InputHelper.getIntInput("please enter a valid option", 1, 11);
 
                         switch (doctoMenu) {
                             case 1 -> {
@@ -127,47 +116,42 @@ public class HospitalManagementApp {
                                 service.add(DoctorService.addConsultant());
 
                             }
-                            case 4-> {
+                            case 4 -> {
                                 DoctorService service = new DoctorService();
                                 service.add(DoctorService.addGeneralPractitioner());
                             }
-                              case 5 -> {
+                            case 5 -> {
                                 DoctorService.addSampleDoctors();
                                 DoctorService.displayAllDoctor();
                             }
 
-                        case 6 -> {
-                                System.out.print("Enter specialization to search: ");
-                                String specialization = scanner.nextLine();
+                            case 6 -> {
+                                String specialization = InputHelper.getStringInput("Enter specialization to search ");
                                 DoctorService.getDoctorsBySpecialization(specialization);
-                        }
-                        case 7 -> {
+                            }
+                            case 7 -> {
                                 DoctorService.getAvailableDoctors();
-                        }
+                            }
 
                             case 8 -> {
-                                System.out.print("Enter Doctor ID to assign to: ");
-                                String doctorIdAssign = scanner.nextLine();
-                                System.out.print("Enter Patient ID to assign: ");
-                                String patientIdAssign = scanner.nextLine();
+                                String doctorIdAssign = InputHelper.getStringInput("Enter Doctor ID to assign to ");
+                                String patientIdAssign = InputHelper.getStringInput("Enter Patient ID to assign ");
                                 DoctorService doctorService = new DoctorService();
                                 Doctor assigned = doctorService.assignPatient(doctorIdAssign, patientIdAssign);
                                 if (assigned.isAvailable()) {
                                     System.out.println("Patient assigned to doctor successfully.");
                                 } else {
-                                    System.out.println("Assignment failed. Check IDs or implement assignPatient in DoctorService.");
+                                    System.out.println("Assignment failed. Check IDs or implement assignPatient in DoctorService");
                                 }
                             }
 
                             case 9 -> {
-                                System.out.print("Enter Doctor ID to update: ");
-                                String doctorId = scanner.nextLine();
+                                String doctorId = InputHelper.getStringInput("Enter Doctor ID to update");
                                 DoctorService.editDoctorById(doctorId);
 
-                        }
+                            }
                             case 10 -> {
-                                System.out.print("Enter Doctor ID to remove: ");
-                                String doctorIdToRemove = scanner.nextLine();
+                                String doctorIdToRemove = InputHelper.getStringInput("Enter Doctor ID to remove");
                                 DoctorService.removeDoctor(doctorIdToRemove);
                             }
 
@@ -184,13 +168,12 @@ public class HospitalManagementApp {
                     nurseMenu = 0;
                     while (nurseMenu != 8) {
                         showNurseMenu();
-                        nurseMenu = InputHelper.getIntInput("please enter a valid option",1,8);
+                        nurseMenu = InputHelper.getIntInput("please enter a valid option", 1, 8);
 
                         switch (nurseMenu) {
                             case 1 -> {
-                                NurseService service = new NurseService ();
-                                Nurse nurse=new Nurse();
-                                service.addNurse();
+                                NurseService service = new NurseService();
+                                service.add(service.addNurse());
 
                             }
                             case 2 -> {
@@ -198,23 +181,19 @@ public class HospitalManagementApp {
                                 NurseService.displayAllNurse();
                             }
                             case 3 -> {
-                                System.out.print("Enter department Id: ");
-                                String departmentId = scanner.nextLine();
+                                String departmentId = InputHelper.getStringInput("Enter department Id");
                                 NurseService.getNursesByDepartment(departmentId);
 
 
                             }
                             case 4 -> {
-                                System.out.print("Enter shift (Morning/Evening/Night): ");
-                                String shift = scanner.nextLine();
+
+                                String shift = InputHelper.getStringInput("Enter shift (Morning/Evening/Night) ");
                                 NurseService.getNursesByShift(shift);
                             }
                             case 5 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Nurse ID to assign to: ");
-                                String nurseIdAssign = scanner.nextLine();
-                                System.out.print("Enter Patient ID to assign: ");
-                                String patientIdAssign = scanner.nextLine();
+                                String nurseIdAssign = InputHelper.getStringInput("Enter Nurse ID to assign to ");
+                                String patientIdAssign = InputHelper.getStringInput("Enter Patient ID to assign");
                                 NurseService nurseService = new NurseService();
                                 Nurse assignedNurse = nurseService.assignPatientToNurse(nurseIdAssign, patientIdAssign);
                                 if (assignedNurse != null) {
@@ -223,23 +202,14 @@ public class HospitalManagementApp {
                                     System.out.println("Assignment failed. Check IDs or implement assignPatient in NurseService.");
                                 }
                             }
+
                             case 6 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Nurse ID to update: ");
-                                String nurseId = scanner.nextLine();
-                                System.out.println("Enter updated nurse details:");
-                                Nurse updatedNurse = NurseService.addNurse();
-                                boolean updated = NurseService.editNurse(nurseId, updatedNurse);
-                                if (updated) {
-                                    System.out.println("Nurse updated successfully.");
-                                } else {
-                                    System.out.println("Nurse with ID " + nurseId + " not found.");
-                                }
+                                String nurseId = InputHelper.getStringInput("Enter Nurse ID to edit");
+                                NurseService.editNurseByMenu(nurseId);
                             }
+
                             case 7 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Nurse ID to remove: ");
-                                String nurseIdToRemove = scanner.nextLine();
+                                String nurseIdToRemove = InputHelper.getStringInput("Enter Nurse ID to remove ");
                                 NurseService.removeNurse(nurseIdToRemove);
                             }
                             case 8 -> {
@@ -255,53 +225,40 @@ public class HospitalManagementApp {
                     appointmentMenu = 0;
                     while (appointmentMenu != 10) {
                         showAppointmentMenu();
-                        appointmentMenu = InputHelper.getIntInput("please enter a valid option",1,10);
+                        appointmentMenu = InputHelper.getIntInput("please enter a valid option", 1, 10);
 
                         switch (appointmentMenu) {
                             case 1 -> {
-                                Appointment appointment = Service.AppointmentService.addAppointment();
-                                Service.AppointmentService.save(appointment);
+                                AppointmentService Service = new AppointmentService();
+                                Service.add(Service.addAppointment());
                             }
                             case 2 -> {
-                                    AppointmentService.addSampleAppointments();
-                                    AppointmentService.displayAllAppointments();
+                                AppointmentService.addSampleAppointments();
+                                AppointmentService.displayAllAppointments();
                             }
                             case 3 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Patient ID to view appointments: ");
-                                String patientId = scanner.nextLine();
+                                String patientId = InputHelper.getStringInput("Enter Patient ID to view appointments ");
                                 Service.AppointmentService.getAppointmentsByPatient(patientId);
                             }
                             case 4 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Doctor ID to view appointments: ");
-                                String doctorId = scanner.nextLine();
-                                Service.AppointmentService. getRecordsByDoctorId(doctorId);
+                                String doctorId = InputHelper.getStringInput("Enter Doctor ID to view appointments");
+                                Service.AppointmentService.getAppointmentByDoctorId(doctorId);
                             }
                             case 5 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Date (YYYY-MM-DD) to view appointments: ");
-                                String date = scanner.nextLine();
-                                Service.AppointmentService.getAppointmentsByDate(LocalDate.parse(date));
+                                LocalDate date = InputHelper.getDateInput("Enter Date to view appointments ");
+                                Service.AppointmentService.getAppointmentsByDate(date);
                             }
                             case 6 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Appointment ID to reschedule: ");
-                                String appointmentId = scanner.nextLine();
-                                System.out.print("Enter new Date (YYYY-MM-DD): ");
-                                String newDate = scanner.nextLine();
-                                Service.AppointmentService.rescheduleAppointment(appointmentId, LocalDate.parse(newDate));
+                                String appointmentId = InputHelper.getStringInput("Enter Appointment ID to reschedule ");
+                                LocalDate newDate = InputHelper.getDateInput("Enter new Date");
+                                Service.AppointmentService.rescheduleAppointment(appointmentId, newDate);
                             }
                             case 7 -> {
-                                scanner.nextLine();
-                                System.out.print("Enter Appointment ID to cancel: ");
-                                String appointmentIdToCancel = scanner.nextLine();
+                                String appointmentIdToCancel = InputHelper.getStringInput("Enter Appointment ID to cancel");
                                 Service.AppointmentService.cancelAppointment(appointmentIdToCancel);
                             }
                             case 8 -> {
-                                scanner.nextLine();
-                                System.out.print("Enter Appointment ID to complete: ");
-                                String appointmentIdToComplete = scanner.nextLine();
+                                String appointmentIdToComplete = InputHelper.getStringInput("Enter Appointment ID to complete");
                                 Service.AppointmentService.completeAppointment(appointmentIdToComplete);
                             }
                             case 9 -> {
@@ -320,52 +277,40 @@ public class HospitalManagementApp {
                     medicalRecordsMenu = 0;
                     while (medicalRecordsMenu != 8) {
                         showMedicalRecordsMenu();
-                        medicalRecordsMenu = InputHelper.getIntInput("please enter a valid option",1,8);
+                        medicalRecordsMenu = InputHelper.getIntInput("please enter a valid option", 1, 8);
 
                         switch (medicalRecordsMenu) {
                             case 1 -> {
-                                MedicalRecord medicalRecord = MedicalRecordService.addMedicalRecord();
-                                MedicalRecordService.save(medicalRecord);
+                                MedicalRecordService service = new MedicalRecordService();
+                                service.add(service.addMedicalRecord());
                             }
-                            case 2 ->  {
+                            case 2 -> {
                                 MedicalRecordService.addSampleMedicalRecord();
                                 MedicalRecordService.displayAllMedicalRecord();
                             }
                             case 3 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Patient ID to view records: ");
-                                String patientId = scanner.nextLine();
+
+                                String patientId = InputHelper.getStringInput("Enter Patient ID to view records ");
                                 MedicalRecordService.getRecordsByPatientId(patientId);
                             }
                             case 4 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Doctor ID to view records: ");
-                                String doctorId = scanner.nextLine();
+
+                                String doctorId = InputHelper.getStringInput("Enter Doctor ID to view records");
                                 MedicalRecordService.getRecordsByDoctorId(doctorId);
                             }
                             case 5 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Medical Record ID to update: ");
-                                String recordId = scanner.nextLine();
-                                System.out.println("Enter updated medical record details:");
-                                MedicalRecord updatedRecord = MedicalRecordService.addMedicalRecord();
-                                boolean updated = MedicalRecordService.editMedicalRecord(recordId, updatedRecord);
-                                if (updated) {
-                                    System.out.println("Medical Record updated successfully.");
-                                } else {
-                                    System.out.println("Medical Record with ID " + recordId + " not found.");
-                                }
+                                String recordId = InputHelper.getStringInput("Enter Medical Record ID to edit or add ");
+                                MedicalRecordService.editMedicalRecord(recordId);
                             }
+
+
                             case 6 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Medical Record ID to delete: ");
-                                String recordIdToDelete = scanner.nextLine();
+                                String recordIdToDelete = InputHelper.getStringInput("Enter Medical Record ID to delete");
                                 MedicalRecordService.removeMedicalRecord(recordIdToDelete);
                             }
                             case 7 -> {
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Patient ID to generate history report: ");
-                                String patientIdForReport = scanner.nextLine();
+
+                                String patientIdForReport = InputHelper.getStringInput("Enter Patient ID to generate history report ");
                                 MedicalRecordService.generatePatientHistoryReport(patientIdForReport);
                             }
 
@@ -382,56 +327,40 @@ public class HospitalManagementApp {
                     departmentMenu = 0;
                     while (departmentMenu != 8) {
                         showDepartmentMenu();
-                        departmentMenu = InputHelper.getIntInput("please enter a valid option",1,8);
+                        departmentMenu = InputHelper.getIntInput("please enter a valid option", 1, 8);
 
                         switch (departmentMenu) {
-                            case 1 ->{
+                            case 1 -> {
                                 Department department = DepartmentService.addDepartment();
                                 DepartmentService.save(department);
                             }
-                            case 2 ->{
+                            case 2 -> {
                                 DepartmentService.addSampleDepartments();
                                 DepartmentService.displayAllDepartments();
                             }
-                            case 3 ->{
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Department ID to view details: ");
-                                String departmentId = scanner.nextLine();
+                            case 3 -> {
+                                String departmentId = InputHelper.getStringInput("Enter Department ID to view details");
                                 DepartmentService.viewDepartmentDetails(departmentId);
                             }
-                            case 4 ->{
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Department ID to assign doctor to: ");
-                                String departmentIdAssignDoctor = scanner.nextLine();
-                                System.out.print("Enter Doctor ID to assign: ");
-                                String doctorIdAssign = scanner.nextLine();
-                                DepartmentService.assignDoctorToDepartment(departmentIdAssignDoctor, doctorIdAssign);
+                            case 4 -> {
+                                String departmentIdAssignDoctor = InputHelper.getStringInput("Enter Department ID to assign doctor to ");
+                                String doctorIdAssign = InputHelper.getStringInput("Enter Doctor ID to assign: ");
+                                DepartmentService.assignDoctorToDepartment(doctorIdAssign, departmentIdAssignDoctor);
+
                             }
-                            case 5 ->{
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Department ID to assign nurse to: ");
-                                String departmentIdAssignNurse = scanner.nextLine();
-                                System.out.print("Enter Nurse ID to assign: ");
-                                String nurseIdAssign = scanner.nextLine();
-                                DepartmentService.assignNurseToDepartment(departmentIdAssignNurse, nurseIdAssign);
+                            case 5 -> {
+                                String departmentIdAssignNurse = InputHelper.getStringInput("Enter Department ID ");
+                                String nurseIdAssign = InputHelper.getStringInput("Enter Nurse ID to assign ");
+                                DepartmentService.assignNurseToDepartment(nurseIdAssign, departmentIdAssignNurse);
                             }
-                            case 6 ->{
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Department ID to update: ");
-                                String departmentId = scanner.nextLine();
-                                System.out.println("Enter updated department details:");
-                                Department updatedDepartment = DepartmentService.addDepartment();
-                                boolean updated = DepartmentService.editDepartment(departmentId, updatedDepartment);
-                                if (updated) {
-                                    System.out.println("Department updated successfully.");
-                                } else {
-                                    System.out.println("Department with ID " + departmentId + " not found.");
-                                }
+                            case 6 -> {
+                                String departmentId = InputHelper.getStringInput("Enter Department ID to update ");
+                                DepartmentService.editDepartment(departmentId);
+
                             }
-                            case 7 ->{
-                                scanner.nextLine(); // Consume newline
-                                System.out.print("Enter Department ID to view statistics: ");
-                                String departmentIdForStats = scanner.nextLine();
+
+                            case 7 -> {
+                                String departmentIdForStats = InputHelper.getStringInput("Enter Department ID to view statistics ");
                                 DepartmentService.viewDepartmentStatistics(departmentIdForStats);
                             }
                             case 8 -> {
@@ -447,30 +376,31 @@ public class HospitalManagementApp {
                     reportsAndStatisticsMenu = 0;
                     while (reportsAndStatisticsMenu != 6) {
                         showReportsAndStatisticsMenu();
-                        reportsAndStatisticsMenu = InputHelper.getIntInput("please enter a valid option",1,6);
+                        reportsAndStatisticsMenu = InputHelper.getIntInput("please enter a valid option", 1, 6);
 
                         switch (reportsAndStatisticsMenu) {
                             case 1 -> {
 
-                                System.out.println("Enter the date for the report (YYYY-MM-DD): ");
-                                String date = scanner.nextLine();
-                                Service.AppointmentService.viewDailyAppointmentsReport(LocalDate.parse(date));
+                                LocalDate date = InputHelper.getDateInput("Enter the date for the report ");
+                                Service.AppointmentService.viewDailyAppointmentsReport(date);
 
                             }
                             case 2 -> {
-                                DoctorService.generateDoctorPerformanceReport();
+                                String Id = InputHelper.getStringInput("Enter Doctor ID to Performance Report ");
+                                DoctorService.generateDoctorPerformanceReport(Id);
                             }
                             case 3 -> {
-                                DepartmentService.generateDepartmentOccupancyReport();
+
+                                String Id = InputHelper.getStringInput("Enter Department ID to  Report");
+                                DepartmentService.generateDepartmentOccupancyReport(Id);
                             }
                             case 4 -> {
-
-                                System.out.println("Enter the date for the report (YYYY-MM-DD): ");
-                                String date = scanner.nextLine();
-                                PatientService.generateDailyPatientStatistics(LocalDate.parse(date));
+                                String patientid = InputHelper.getStringInput("Enter Patient ID: ");
+                                PatientService.generatePatientStatisticsReport(patientid);
                             }
                             case 5 -> {
-                                PatientService.generateEmergencyCasesReport();
+                                String patientid = InputHelper.getStringInput("Enter Patient ID: ");
+                                PatientService.generateEmergencyCasesReport(patientid);
                             }
                             case 6 -> {
                                 System.out.println("Exit from menu");
@@ -489,9 +419,9 @@ public class HospitalManagementApp {
 
     }
 
-        public static void showMainMenu () {
-            System.out.println("===== Hospital Management App =====\n");
-            System.out.println("""
+    public static void showMainMenu() {
+        System.out.println("===== Hospital Management App =====\n");
+        System.out.println("""
                 1-Patient Management
                 2-Doctor Management
                 3-Nurse Management
@@ -501,10 +431,10 @@ public class HospitalManagementApp {
                 7-Reports and Statistics
                 8- Exit
                 """);
-            System.out.println("==============================");
-        }
+        System.out.println("==============================");
+    }
 
-    public static void showDoctorMenu () {
+    public static void showDoctorMenu() {
         System.out.println("===== Doctor Management=====\n");
         System.out.println("""
                 1-Add Doctor
@@ -522,7 +452,8 @@ public class HospitalManagementApp {
         System.out.println("==============================");
 
     }
-    public static void showPatientMenu () {
+
+    public static void showPatientMenu() {
         System.out.println("===== Patient Management=====\n");
         System.out.println("""
                 1-Register New Patient
@@ -539,7 +470,8 @@ public class HospitalManagementApp {
         System.out.println("==============================");
 
     }
-    public static void showNurseMenu () {
+
+    public static void showNurseMenu() {
         System.out.println("===== Nurse Management=====\n");
 
         System.out.println("""
@@ -551,11 +483,12 @@ public class HospitalManagementApp {
                 6-Update Nurse Information
                 7-Remove Nurse
                 8-Exit
-             
+                
                 """);
         System.out.println("==============================");
     }
-    public static void showAppointmentMenu () {
+
+    public static void showAppointmentMenu() {
         System.out.println("===== Appointment Management=====\n");
         System.out.println("""
                 1-Schedule New Appointment
@@ -571,7 +504,8 @@ public class HospitalManagementApp {
                 """);
         System.out.println("==============================");
     }
-    public static void showMedicalRecordsMenu () {
+
+    public static void showMedicalRecordsMenu() {
         System.out.println("=====Medical Records  Management=====\n");
         System.out.println("""
                 1-Create Medical Record
@@ -586,7 +520,8 @@ public class HospitalManagementApp {
                 """);
         System.out.println("==============================");
     }
-    public static void showDepartmentMenu () {
+
+    public static void showDepartmentMenu() {
         System.out.println("=====Department Management=====\n");
 
         System.out.println("""
@@ -602,7 +537,8 @@ public class HospitalManagementApp {
                 """);
         System.out.println("==============================");
     }
-    public static void showReportsAndStatisticsMenu () {
+
+    public static void showReportsAndStatisticsMenu() {
         System.out.println("=====Reports And Statistics Management=====\n");
 
         System.out.println("""
@@ -616,14 +552,15 @@ public class HospitalManagementApp {
                 """);
         System.out.println("==============================");
     }
+
     public static void addSampleDataForAll() {
         PatientService.addSamplePatients();
         DoctorService.addSampleDoctors();
-        //NurseService.addSampleNurses();
+        NurseService.addSampleNurses();
         DepartmentService.addSampleDepartments();
         MedicalRecordService.addSampleMedicalRecord();
         AppointmentService.addSampleAppointments();
 
     }
 
-    }
+}

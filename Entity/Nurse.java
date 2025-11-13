@@ -97,7 +97,7 @@ public class Nurse extends PersonBase implements Displayable {
     @Override
     public void displayInfo() {
         super.displayInfo();
-        System.out.println("===== Entity.Nurse Information =====");
+        System.out.println("===== Nurse Information =====");
         System.out.println("Nurse ID: " + nurseId);
         System.out.println("Department ID: " + departmentId);
         System.out.println("Shift: " + shift);

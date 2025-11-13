@@ -7,7 +7,6 @@ import Utils.HelperUtils;
 import Utils.InputHelper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DoctorService implements Manageable, Searchable {
@@ -119,27 +118,27 @@ public class DoctorService implements Manageable, Searchable {
                     int choice = InputHelper.getIntInput("Enter your choice: ");
 
                     switch (choice) {
-                        case 1 -> doctor.setFirstName(InputHelper.getStringInput("Enter new first name: "));
-                        case 2 -> doctor.setLastName(InputHelper.getStringInput("Enter new last name: "));
-                        case 3 -> doctor.setDateOfBirth(InputHelper.getDateInput("Enter new date of birth (yyyy-MM-dd): "));
-                        case 4 -> doctor.setGender(InputHelper.getStringInput("Enter new gender (M/F): "));
-                        case 5 -> doctor.setPhoneNumber(InputHelper.getStringInput("Enter new phone number: "));
-                        case 6 -> doctor.setEmail(InputHelper.getStringInput("Enter new email: "));
+                        case 1 -> doctor.setFirstName(InputHelper.getStringInput("Enter new first name "));
+                        case 2 -> doctor.setLastName(InputHelper.getStringInput("Enter new last name "));
+                        case 3 -> doctor.setDateOfBirth(InputHelper.getDateInput("Enter new date of birth  "));
+                        case 4 -> doctor.setGender(InputHelper.getStringInput("Enter new gender (M/F) "));
+                        case 5 -> doctor.setPhoneNumber(InputHelper.getStringInput("Enter new phone number"));
+                        case 6 -> doctor.setEmail(InputHelper.getStringInput("Enter new email "));
                         case 7 -> doctor.setAddress(InputHelper.getStringInput("Enter new address: "));
-                        case 8 -> doctor.setSpecialization(InputHelper.getStringInput("Enter new specialization: "));
-                        case 9 -> doctor.setQualification(InputHelper.getStringInput("Enter new qualification: "));
-                        case 10 -> doctor.setDepartmentId(InputHelper.getStringInput("Enter new Department ID: "));
-                        case 11 -> doctor.setExperienceYears(InputHelper.getIntInput("Enter new experience years: "));
-                        case 12 -> doctor.setConsultationFee(InputHelper.getDoubleInput("Enter new consultation fee: "));
+                        case 8 -> doctor.setSpecialization(InputHelper.getStringInput("Enter new specialization"));
+                        case 9 -> doctor.setQualification(InputHelper.getStringInput("Enter new qualification "));
+                        case 10 -> doctor.setDepartmentId(InputHelper.getStringInput("Enter new Department ID "));
+                        case 11 -> doctor.setExperienceYears(InputHelper.getIntInput("Enter new experience years"));
+                        case 12 -> doctor.setConsultationFee(InputHelper.getDoubleInput("Enter new consultation fee "));
                         case 13 -> {
                             List<String> newSlots = new ArrayList<>();
                             boolean addMore = true;
                             int slotNumber = 1;
                             while (addMore) {
-                                String slot = InputHelper.getStringInput("Enter available slot #" + slotNumber + ": ");
+                                String slot = InputHelper.getStringInput("Enter available slot #" + slotNumber );
                                 newSlots.add(slot);
                                 slotNumber++;
-                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more: ");
+                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more ");
                                 if (exitFlag.equalsIgnoreCase("q")) addMore = false;
                             }
                             doctor.setAvailableSlots(newSlots);
@@ -149,10 +148,10 @@ public class DoctorService implements Manageable, Searchable {
                             boolean addMore = true;
                             int patientNumber = 1;
                             while (addMore) {
-                                String patient = InputHelper.getStringInput("Enter assigned patient #" + patientNumber + ": ");
+                                String patient = InputHelper.getStringInput("Enter assigned patient #" + patientNumber);
                                 newAssignedPatients.add(patient);
                                 patientNumber++;
-                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more: ");
+                                String exitFlag = InputHelper.getStringInput("Press 'q' to stop or Enter to add more ");
                                 if (exitFlag.equalsIgnoreCase("q")) addMore = false;
                             }
                             doctor.setAssignedPatients(newAssignedPatients);
@@ -338,7 +337,7 @@ public class DoctorService implements Manageable, Searchable {
         gp.setAssignedPatients(baseDr.getAssignedPatients());
         boolean walkinInput = InputHelper.getConfirmation("Is walk-in consultation available?");
         gp.setWalkinAvailable(walkinInput);
-        boolean homeVisitInput = InputHelper.getConfirmation("Is home visit available?:");
+        boolean homeVisitInput = InputHelper.getConfirmation("Is home visit available?");
         gp.setHomeVisitAvailable(homeVisitInput);
         boolean vaccinationInput = InputHelper.getConfirmation("Is vaccination certified?");
         gp.setVaccinationCertified(vaccinationInput);
@@ -501,9 +500,9 @@ public class DoctorService implements Manageable, Searchable {
         boolean found = false;
         String k = keyword == null ? "" : keyword.toLowerCase();
         for (Doctor d : ListOfDoctors) {
-            if ((d.getFirstName() != null && d.getFirstName().toLowerCase().contains(k)) ||
-                    (d.getLastName() != null && d.getLastName().toLowerCase().contains(k)) ||
-                    (d.getSpecialization() != null && d.getSpecialization().toLowerCase().contains(k))) {
+            if ((HelperUtils.isNotNull(d.getFirstName())  && d.getFirstName().toLowerCase().contains(k)) ||
+                    (HelperUtils.isNotNull(d.getLastName())  && d.getLastName().toLowerCase().contains(k)) ||
+                    (HelperUtils.isNotNull(d.getSpecialization())  && d.getSpecialization().toLowerCase().contains(k))) {
                 d.displayInfo();
                 found = true;
             }
@@ -533,38 +532,6 @@ public class DoctorService implements Manageable, Searchable {
         }
     }
 
-
-    public static void generateDoctorPerformanceReport() {
-        if (ListOfDoctors.isEmpty()) {
-            System.out.println("No doctors available to generate report.");
-            return;
-        }
-
-        System.out.println("===== Doctor Performance Report =====");
-
-        for (Doctor doctor : ListOfDoctors) {
-            System.out.println("Doctor: " + doctor.getFirstName() + " " + doctor.getLastName());
-            System.out.println("Specialization: " + doctor.getSpecialization());
-
-            List<String> patients = doctor.getAssignedPatients();
-            int totalPatients = (patients != null) ? patients.size() : 0;
-            System.out.println("Assigned Patients: " + totalPatients);
-
-            double consultationFee = doctor.getConsultationFee();
-            double totalEarnings = consultationFee * totalPatients;
-            System.out.println("Consultation Fee: " + consultationFee);
-            System.out.println("Total Earnings: " + totalEarnings);
-
-            // If the doctor is a surgeon, include surgeries performed
-            if (doctor instanceof Surgeon surgeon) {
-                System.out.println("Surgeries Performed: " + surgeon.getSurgeriesPerformed());
-            }
-
-            System.out.println("-----------------------------------");
-        }
-
-        System.out.println("===== End of Report =====\n");
-    }
 
     public static void addSampleDoctors() {
         for (int i = 0; i < 3; i++) {
@@ -646,6 +613,47 @@ public class DoctorService implements Manageable, Searchable {
 
         }
     }
+
+    public static void generateDoctorPerformanceReport(String doctorId) {
+        if (ListOfDoctors.isEmpty()) {
+            System.out.println("No doctors available to generate report.");
+            return;
+        }
+
+        Doctor foundDoctor = null;
+        for (Doctor doctor : ListOfDoctors) {
+            if (HelperUtils.isNotNull(doctor.getDoctorId()) && doctor.getDoctorId().equals(doctorId)) {
+                foundDoctor = doctor;
+                break;
+            }
+        }
+
+        if (foundDoctor == null) {
+            System.out.println("Doctor with ID " + doctorId + " not found.");
+            return;
+        }
+
+        System.out.println("===== Doctor Performance Report =====");
+        System.out.println("Doctor: " + foundDoctor.getFirstName() + " " + foundDoctor.getLastName());
+        System.out.println("Specialization: " + foundDoctor.getSpecialization());
+
+        List<String> patients = foundDoctor.getAssignedPatients();
+        int totalPatients = (patients != null) ? patients.size() : 0;
+        System.out.println("Assigned Patients: " + totalPatients);
+
+        double consultationFee = foundDoctor.getConsultationFee();
+        double totalEarnings = consultationFee * totalPatients;
+        System.out.println("Consultation Fee: " + consultationFee);
+        System.out.println("Total Earnings: " + totalEarnings);
+
+        if (foundDoctor instanceof Surgeon surgeon) {
+            System.out.println("Surgeries Performed: " + surgeon.getSurgeriesPerformed());
+        }
+
+        System.out.println("===== End of Report =====\n");
+    }
+
+
 }
 
 

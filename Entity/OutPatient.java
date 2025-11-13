@@ -6,9 +6,6 @@ import Utils.HelperUtils;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
-
-import static Main.HospitalManagementApp.scanner;
 
 public class OutPatient  extends Patient implements Displayable {
     Scanner scanner = new Scanner(System.in);

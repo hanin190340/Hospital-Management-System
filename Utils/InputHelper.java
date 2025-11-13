@@ -1,7 +1,9 @@
 package Utils;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
     public class InputHelper {
@@ -10,11 +12,11 @@ import java.util.Scanner;
 
         // ------------------ String Input ------------------
         public static String getStringInput(String prompt) {
-            System.out.print(prompt);
+            System.out.print(prompt + ":");
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input)) {
-                System.out.println("⚠ Invalid input! Please enter a non-empty string.");
+                System.out.println("Invalid input! Please enter a non-empty string.");
                 System.out.print(prompt + " :");
                 input = scanner.nextLine().trim();
             }
@@ -27,8 +29,8 @@ import java.util.Scanner;
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input) || !input.matches("-?\\d+")) {
-                System.out.println("⚠ Please enter a valid integer!");
-                System.out.print(prompt+" :");
+                System.out.println(" Please enter a valid integer!");
+                System.out.print(prompt +" :");
                 input = scanner.nextLine().trim();
             }
             return Integer.parseInt(input);
@@ -50,7 +52,7 @@ import java.util.Scanner;
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidString(input) || !input.matches("-?\\d+(\\.\\d +)?")) {
-                System.out.println("⚠ Please enter a valid number!");
+                System.out.println(" Please enter a valid number!");
                 System.out.print(prompt + " :");
                 input = scanner.nextLine().trim();
             }
@@ -64,7 +66,7 @@ import java.util.Scanner;
             String input = scanner.nextLine().trim();
 
             while (!HelperUtils.isValidDate(input)) {
-                System.out.println("⚠ Invalid date format or invalid date!");
+                System.out.println(" Invalid date format or invalid date!");
                 System.out.print(prompt + " (YYYY-MM-DD): ");
                 input = scanner.nextLine().trim();
             }
@@ -85,6 +87,10 @@ import java.util.Scanner;
 
             return input.equals("y");
         }
+
+
+
+
     }
 
 
